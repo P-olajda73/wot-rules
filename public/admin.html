@@ -11,46 +11,199 @@
         <div class="header-container">
             <img width="100px" src="logo.png"/>
             <h1>Admin Panel</h1>
-            <button id="logout" class="button button-logout">Odhlásiť sa</button>
+            <button id="logout" class="button button-logout" style="padding: 5px 10px; cursor: pointer;">Odhlásiť sa</button>
         </div>
     </header>
-    <main class="admin-container">
+    <main class="admin-container" style="padding: 20px; max-width: 800px; margin: 0 auto;">
         <h2>Správa Pravidiel</h2>
     
-        <div class="lang-select">
+        <div class="lang-select" style="margin-bottom: 20px;">
             <label for="language">Vyber jazyk:</label>
-            <select id="language">
-                <option class="option" value="cz">Čeština</option>
-                <option class="option" value="en">English</option>
-                <option class="option" value="ru">Ruština</option>
-                <option class="option" value="de">Nemčina</option>
-                <option class="option" value="ua">Ukrajinčina</option>
-                <option class="option" value="pl">Polština</option>
+            <select id="language" style="padding: 5px; font-size: 16px;">
+                <option value="cz">Čeština</option>
+                <option value="en">English</option>
+                <option value="ru">Ruština</option>
+                <option value="de">Nemčina</option>
+                <option value="ua">Ukrajinčina</option>
+                <option value="pl">Polština</option>
             </select>
         </div>
+
         <div class="section-container">
-            <div class="section">
+            <div class="section" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 5px;">
                 <h3>Tipy</h3>
                 <div id="tipsContainer"></div>
-                <button id="addTip" class="button">Pridať Tip</button>
+                <button id="addTip" class="button" style="margin-top: 10px; padding: 5px 10px; cursor: pointer;">Pridať Tip</button>
             </div>
 
-            <div class="section">
+            <div class="section" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 5px;">
                 <h3>Cieľ klanu</h3>
                 <div id="goalContainer"></div>
-                <button id="addGoal" class="button">Pridať Cieľ</button>
+                <button id="addGoal" class="button" style="margin-top: 10px; padding: 5px 10px; cursor: pointer;">Pridať Cieľ</button>
             </div>
-            <div class="section">
+
+            <div class="section" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 5px;">
                 <h3>Pravidlá</h3>
                 <div id="rulesContainer"></div>
-                <button id="addRule" class="button">Pridať Pravidlo</button>
+                <button id="addRule" class="button" style="margin-top: 10px; padding: 5px 10px; cursor: pointer;">Pridať Pravidlo</button>
             </div>
         </div>
         <br>
-        <button id="saveRules" class="button">Uložiť pravidlá</button>
+        <button id="saveRules" class="button" style="padding: 10px 20px; font-size: 16px; font-weight: bold; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Uložiť pravidlá</button>
     </main>
-    
-    
-    <script src="admin.js"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const tipsContainer = document.getElementById("tipsContainer");
+        const goalContainer = document.getElementById("goalContainer");
+        const rulesContainer = document.getElementById("rulesContainer");
+        const addTipButton = document.getElementById("addTip");
+        const addGoalButton = document.getElementById("addGoal");
+        const addRuleButton = document.getElementById("addRule");
+        const saveButton = document.getElementById("saveRules");
+        const languageSelect = document.getElementById("language");
+
+        const API_URL = "/rules";
+        let rulesData = {};
+        let currentLanguage = "cz";
+
+        // ✅ Načíta pravidlá zo servera
+        async function loadRules() {
+            try {
+                const response = await fetch(`${API_URL}/${currentLanguage}`);
+                if (response.ok) {
+                    rulesData[currentLanguage] = await response.json();
+                } else {
+                    rulesData[currentLanguage] = { tips: [""], goal: [""], rules: [""] };
+                }
+            } catch (error) {
+                console.error("Chyba pri načítaní pravidiel:", error);
+                rulesData[currentLanguage] = { tips: [""], goal: [""], rules: [""] };
+            }
+            renderForm();
+        }
+
+        // ✅ Vykreslí formulár pre aktuálny jazyk
+        function renderForm() {
+            if (!tipsContainer || !goalContainer || !rulesContainer) return;
+            
+            tipsContainer.innerHTML = "";
+            goalContainer.innerHTML = "";
+            rulesContainer.innerHTML = "";
+
+            const langData = rulesData[currentLanguage] || { tips: [""], goal: [""], rules: [""] };
+
+            (langData.tips || []).forEach((tip, index) => {
+                tipsContainer.innerHTML += createInputElement("tips", index, tip);
+            });
+
+            (langData.goal || []).forEach((goal, index) => {
+                goalContainer.innerHTML += createInputElement("goal", index, goal);
+            });
+
+            (langData.rules || []).forEach((rule, index) => {
+                rulesContainer.innerHTML += createInputElement("rules", index, rule);
+            });
+
+            attachDeleteListeners();
+        }
+
+        // ✅ Vytvorí HTML input + delete button
+        function createInputElement(type, index, value) {
+            return `
+                <div class="input-group" style="display: flex; margin-bottom: 5px;">
+                    <input type="text" data-type="${type}" data-index="${index}" value="${value || ''}" style="flex: 1; padding: 5px; font-size: 14px;">
+                    <button class="delete-button" data-type="${type}" data-index="${index}" style="margin-left: 5px; padding: 5px; color: red; font-weight: bold; cursor: pointer;">X</button>
+                </div>
+            `;
+        }
+
+        // ✅ Pridá event listener na delete buttons
+        function attachDeleteListeners() {
+            document.querySelectorAll(".delete-button").forEach((button) => {
+                button.addEventListener("click", (e) => {
+                    const type = e.target.getAttribute("data-type");
+                    const index = parseInt(e.target.getAttribute("data-index"), 10);
+
+                    if (rulesData[currentLanguage] && rulesData[currentLanguage][type]) {
+                        rulesData[currentLanguage][type].splice(index, 1);
+                        renderForm();
+                    }
+                });
+            });
+        }
+
+        // ✅ Pridanie nového tipu
+        if (addTipButton) {
+            addTipButton.addEventListener("click", () => {
+                if (!rulesData[currentLanguage]) rulesData[currentLanguage] = { tips: [], goal: [], rules: [] };
+                rulesData[currentLanguage].tips.push("");
+                renderForm();
+            });
+        }
+
+        // ✅ Pridanie nového cieľa
+        if (addGoalButton) {
+            addGoalButton.addEventListener("click", () => {
+                if (!rulesData[currentLanguage]) rulesData[currentLanguage] = { tips: [], goal: [], rules: [] };
+                rulesData[currentLanguage].goal.push("");
+                renderForm();
+            });
+        }
+
+        // ✅ Pridanie nového pravidla
+        if (addRuleButton) {
+            addRuleButton.addEventListener("click", () => {
+                if (!rulesData[currentLanguage]) rulesData[currentLanguage] = { tips: [], goal: [], rules: [] };
+                rulesData[currentLanguage].rules.push("");
+                renderForm();
+            });
+        }
+
+        // ✅ Uloženie pravidiel na server
+        async function saveRules() {
+            try {
+                const updatedRules = { tips: [], goal: [], rules: [] };
+
+                document.querySelectorAll("input[data-type=tips]").forEach((input) => {
+                    if (input.value.trim()) updatedRules.tips.push(input.value.trim());
+                });
+
+                document.querySelectorAll("input[data-type=goal]").forEach((input) => {
+                    if (input.value.trim()) updatedRules.goal.push(input.value.trim());
+                });
+
+                document.querySelectorAll("input[data-type=rules]").forEach((input) => {
+                    if (input.value.trim()) updatedRules.rules.push(input.value.trim());
+                });
+
+                const response = await fetch(`${API_URL}/${currentLanguage}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updatedRules)
+                });
+
+                if (!response.ok) throw new Error("Chyba pri ukladaní.");
+                alert("Pravidlá boli úspešne uložené do databázy!");
+            } catch (error) {
+                console.error("Chyba pri ukladaní:", error);
+                alert("Nepodarilo se uložit pravidla.");
+            }
+        }
+
+        if (languageSelect) {
+            languageSelect.addEventListener("change", async (e) => {
+                currentLanguage = e.target.value;
+                await loadRules();
+            });
+        }
+
+        if (saveButton) {
+            saveButton.addEventListener("click", saveRules);
+        }
+
+        loadRules();
+    });
+    </script>
 </body>
 </html>
