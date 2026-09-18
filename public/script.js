@@ -1,4 +1,4 @@
-const API_URL = "https://4kill-production.up.railway.app/rules";
+const API_URL = "https://";
 
 // Objekt s prekladmi nadpisov pre jednotlivé jazyky
 const translations = {
