@@ -5,25 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For Kill Army - Rules</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #1e1e24; color: #fff; padding: 20px; margin: 0; text-align: center; }
-        header { margin-bottom: 30px; border-bottom: 1px solid #444; padding-bottom: 20px; }
-        .logo { width: 120px; margin-bottom: 10px; }
-        h1 { color: #ff9f1c; margin: 0; font-size: 2.5em; letter-spacing: 1px; }
-        p { color: #ccc; font-size: 1.1em; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background-image: url('background.jpg'); /* Podkladová fotka */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: #1e1e24; 
+            color: #fff; 
+            padding: 20px; 
+            margin: 0; 
+            text-align: center; 
+        }
+        
+        /* 🔹 DEKORATIVNÍ LOGA PO STRANÁCH (PRO POČÍTAČE) */
+        .side-logo {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 150px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .logo-left { left: 40px; }
+        .logo-right { right: 40px; }
+
+        /* Skrytí postranních log na malých obrazovkách mobilů, aby nepřekážela */
+        @media (max-width: 1000px) {
+            .side-logo { display: none; }
+        }
+
+        header { 
+            margin-bottom: 30px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
+            padding-bottom: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        .logo-main { width: 120px; margin-bottom: 10px; }
+        h1 { color: #ff9f1c; margin: 0; font-size: 2.5em; letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        p { color: #ccc; font-size: 1.1em; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         
         /* 🔹 TLAČÍTKA JAZYKŮ */
-        .lang-container { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        .lang-button { padding: 10px 20px; font-size: 15px; font-weight: bold; background: #2a9d8f; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+        .lang-container { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; position: relative; z-index: 10; }
+        .lang-button { padding: 10px 20px; font-size: 15px; font-weight: bold; background: #2a9d8f; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
         .lang-button:hover { background: #218074; }
         .lang-button.active { background: #ff9f1c; color: #1e1e24; }
 
         /* 🔹 TŘI SLOUPCE VEDLE SEBE PRO HRÁČE */
-        .columns-container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; text-align: left; flex-wrap: wrap; }
-        .column { flex: 1; min-width: 300px; background: #2a2a35; padding: 20px; border-radius: 8px; border: 1px solid #3a3a45; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .columns-container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; text-align: left; flex-wrap: wrap; position: relative; z-index: 10; }
+        .column { flex: 1; min-width: 300px; background: rgba(42, 42, 53, 0.9); padding: 20px; border-radius: 8px; border: 1px solid rgba(58, 58, 69, 0.6); box-shadow: 0 4px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
         
-        h3 { color: #ff9f1c; border-bottom: 1px solid #444; padding-bottom: 8px; margin-top: 0; margin-bottom: 15px; font-size: 1.3em; }
+        h3 { color: #ff9f1c; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 8px; margin-top: 0; margin-bottom: 15px; font-size: 1.3em; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
         ul, ol { padding-left: 20px; margin: 0; color: #eee; font-size: 1.05em; line-height: 1.6; }
-        li { margin-bottom: 10px; }
+        li { margin-bottom: 10px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
         
         /* Skrytí obsahu před zvolením jazyka */
         #content-section { display: none; }
@@ -31,8 +67,12 @@
 </head>
 <body>
 
+    <!-- 🔹 DEKORATIVNÍ LOGA PO STRANÁCH -->
+    <img class="side-logo logo-left" src="logo.png" alt="Dekorace vlevo">
+    <img class="side-logo logo-right" src="logo.png" alt="Dekorace vpravo">
+
     <header>
-        <img class="logo" src="logo.png" alt="For Kill Army Logo">
+        <img class="logo-main" src="logo.png" alt="For Kill Army Logo">
         <h1>For Kill Army</h1>
         <p>Vyberte jazyk pre zobrazenie pravidiel / Vyberte jazyk pro zobrazení pravidel.</p>
     </header>
@@ -74,7 +114,6 @@
 
     <script>
         async function loadLanguageRules(lang, buttonElement) {
-            // Zvýraznění aktivního tlačítka
             document.querySelectorAll('.lang-button').forEach(btn => btn.classList.remove('active'));
             if(buttonElement) buttonElement.classList.add('active');
 
@@ -83,7 +122,6 @@
             const tipsList = document.getElementById("tipsList");
             const contentSection = document.getElementById("content-section");
 
-            // Vyčištění starého obsahu
             rulesList.innerHTML = "";
             goalList.innerHTML = "";
             tipsList.innerHTML = "";
@@ -93,22 +131,18 @@
                 if (response.ok) {
                     const data = await response.json();
 
-                    // Vykreslení Pravidel (Číslovaný seznam)
                     if (data.rules && data.rules.length > 0) {
                         data.rules.forEach(item => rulesList.innerHTML += `<li>${item}</li>`);
                     } else { rulesList.innerHTML = "<li>Žádná pravidla nebyla zadána.</li>"; }
 
-                    // Vykreslení Cílů (Odrážky)
                     if (data.goal && data.goal.length > 0) {
                         data.goal.forEach(item => goalList.innerHTML += `<li>${item}</li>`);
                     } else { goalList.innerHTML = "<li>Žádné klanové cíle nebyly zadány.</li>"; }
 
-                    // Vykreslení Tipů (Odrážky)
                     if (data.tips && data.tips.length > 0) {
                         data.tips.forEach(item => tipsList.innerHTML += `<li>${item}</li>`);
                     } else { tipsList.innerHTML = "<li>Žádné tipy nebyly zadány.</li>"; }
 
-                    // Zobrazení sekce pro hráče
                     contentSection.style.display = "block";
                 } else {
                     alert("Nepodařilo se načíst pravidla pro tento jazyk.");
