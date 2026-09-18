@@ -18,43 +18,44 @@
             text-align: center; 
         }
         
-        /* 🔹 DEKORATIVNÍ LOGA PO STRANÁCH (PRO POČÍTAČE) */
-        .side-logo {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 150px;
-            opacity: 0.15;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .logo-left { left: 40px; }
-        .logo-right { right: 40px; }
-
-        /* Skrytí postranních log na malých obrazovkách mobilů, aby nepřekážela */
-        @media (max-width: 1000px) {
-            .side-logo { display: none; }
-        }
-
+        /* 🔹 HORNÍ ZÁHLAVÍ: LOGA PO STRANÁCH A NÁPIS UPROSTŘED */
         header { 
-            margin-bottom: 30px; 
+            max-width: 1200px;
+            margin: 0 auto 30px auto; 
             border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
             padding-bottom: 20px;
-            position: relative;
-            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .logo-main { width: 120px; margin-bottom: 10px; }
-        h1 { color: #ff9f1c; margin: 0; font-size: 2.5em; letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        p { color: #ccc; font-size: 1.1em; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .header-title-block {
+            flex-grow: 1;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .logo-side { 
+            width: 100px; 
+            height: auto;
+            flex-shrink: 0;
+        }
         
+        h1 { color: #ff9f1c; margin: 0; font-size: 2.5em; letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        p { color: #ccc; font-size: 1.1em; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 5px; margin-bottom: 0; }
+        
+        /* Přizpůsobení pro mobily – na malém displeji dáme loga nad sebe, aby se text nemačkal */
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 15px; }
+            .logo-side { width: 80px; }
+        }
+
         /* 🔹 TLAČÍTKA JAZYKŮ */
-        .lang-container { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; position: relative; z-index: 10; }
+        .lang-container { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
         .lang-button { padding: 10px 20px; font-size: 15px; font-weight: bold; background: #2a9d8f; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
         .lang-button:hover { background: #218074; }
         .lang-button.active { background: #ff9f1c; color: #1e1e24; }
 
         /* 🔹 TŘI SLOUPCE VEDLE SEBE PRO HRÁČE */
-        .columns-container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; text-align: left; flex-wrap: wrap; position: relative; z-index: 10; }
+        .columns-container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; text-align: left; flex-wrap: wrap; }
         .column { flex: 1; min-width: 300px; background: rgba(42, 42, 53, 0.9); padding: 20px; border-radius: 8px; border: 1px solid rgba(58, 58, 69, 0.6); box-shadow: 0 4px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
         
         h3 { color: #ff9f1c; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 8px; margin-top: 0; margin-bottom: 15px; font-size: 1.3em; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
@@ -67,14 +68,14 @@
 </head>
 <body>
 
-    <!-- 🔹 DEKORATIVNÍ LOGA PO STRANÁCH -->
-    <img class="side-logo logo-left" src="logo.png" alt="Dekorace vlevo">
-    <img class="side-logo logo-right" src="logo.png" alt="Dekorace vpravo">
-
+    <!-- 🔹 HORNÍ SEKCIE S LOGY PO STRANÁCH -->
     <header>
-        <img class="logo-main" src="logo.png" alt="For Kill Army Logo">
-        <h1>For Kill Army</h1>
-        <p>Vyberte jazyk pre zobrazenie pravidiel / Vyberte jazyk pro zobrazení pravidel.</p>
+        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vlevo">
+        <div class="header-title-block">
+            <h1>For Kill Army</h1>
+            <p>Vyberte jazyk pre zobrazenie pravidiel / Vyberte jazyk pro zobrazení pravidel.</p>
+        </div>
+        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vpravo">
     </header>
 
     <!-- 🔹 VÝBĚR JAZYKŮ -->
@@ -87,7 +88,7 @@
         <button class="lang-button" onclick="loadLanguageRules('pl', this)">Polski</button>
     </div>
 
-    <!-- 🔹 SEKCE S VÝSLEDKY VE TŘECH SLOUPCÍCH -->
+    <!-- 🔹 SEKCE SE TŘEMI SLOUPCI -->
     <main id="content-section">
         <div class="columns-container">
             
