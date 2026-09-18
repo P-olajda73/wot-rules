@@ -34,12 +34,11 @@
             padding: 0 20px;
         }
         .logo-side { 
-            width: 140px; /* ✅ UPRAVENO: Loga zvětšena ze 100px na 140px */
+            width: 140px; 
             height: auto;
             flex-shrink: 0;
         }
         
-        /* ✅ UPRAVENO: Hlavní nadpis zvětšen a nastaven na VELKÁ PÍSMENA (uppercase) */
         h1 { 
             color: #ff9f1c; 
             margin: 0; 
@@ -50,7 +49,7 @@
         }
         p { color: #ccc; font-size: 1.1em; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 8px; margin-bottom: 0; }
         
-        /* Přizpůsobení pro mobily – na malém displeji dáme loga nad sebe, aby se text nemačkal */
+        /* Přizpůsobení pro mobily */
         @media (max-width: 768px) {
             header { flex-direction: column; gap: 15px; }
             .logo-side { width: 100px; }
@@ -66,7 +65,6 @@
         /* 🔹 TŘI SLOUPCE VEDLE SEBE PRO HRÁČE */
         .columns-container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; text-align: left; flex-wrap: wrap; }
         
-        /* ✅ UPRAVENO: Pozadí oken zesvětleno (průhlednost 0.65 místo 0.9), přibyl blur podkladu */
         .column { 
             flex: 1; 
             min-width: 300px; 
@@ -80,8 +78,6 @@
         
         h3 { color: #ff9f1c; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 8px; margin-top: 0; margin-bottom: 15px; font-size: 1.3em; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); text-align: center; }
         ul, ol { padding-left: 20px; margin: 0; color: #eee; font-size: 1.05em; line-height: 1.6; }
-        
-        /* ✅ UPRAVENO: Silnější stín textu u pravidel, aby šel perfektně přečíst i na světlejším podkladu */
         li { margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
         
         /* Skrytí obsahu před zvolením jazyka */
@@ -128,7 +124,7 @@
 
             <!-- 3. SLOUPEC: TIPY -->
             <div class="column">
-                <h3>Tipy a rady</h3>
+                <h3 id="labelTips">Tipy a rady</h3> <!-- ✅ OPRAVENO: Přidáno chybějící id="labelTips" -->
                 <ul id="tipsList"></ul>
             </div>
 
@@ -143,7 +139,7 @@
             ru: { sub: "Выберите язык для отображения правил.", rules: "Правила клана", goal: "Цели клана", tips: "Советы и подсказки", emptyRules: "Правила не указаны.", emptyGoal: "Цели клана не указаны.", emptyTips: "Советы не указаны.", error: "Не удалось загрузить правила для этого языка." },
             de: { sub: "Wählen Sie eine Sprache aus, um die Regeln anzuzeigen.", rules: "Clan-Regeln", goal: "Clan-Ziele", tips: "Tipps und Ratschläge", emptyRules: "Es wurden keine Regeln eingegeben.", emptyGoal: "Es wurden keine Clan-Ziele eingegeben.", emptyTips: "Es wurden keine Tipps eingegeben.", error: "Regeln für diese Sprache konnten nicht geladen werden." },
             ua: { sub: "Виберіть мову для відображення правил.", rules: "Правила клану", goal: "Цілі клану", tips: "Поради та підказки", emptyRules: "Правила не вказані.", emptyGoal: "Цілі клану не вказані.", emptyTips: "Поради не вказані.", error: "Не вдалося завантажити правила для цієї мови." },
-            pl: { sub: "Wybierz język, aby wyświetlić zasady.", rules: "Zasady klanu", goal: "Cele klanu", tips: "Porady i wskazówki", emptyRules: "Nie wprowadzono żadnych zasad.", emptyGoal: "Nie wprowadzono żadnych celów klanu.", emptyTips: "Nie wprowadzono żadnych porad.", error: "Nie udało się załadować zasad dla tego języka." }
+            pl: { sub: "Wybierz język, aby wyświetlić zasady.", rules: "Zasady klanu", color: "Cele klanu", tips: "Porady i wskazówki", emptyRules: "Nie wprowadzono żadnych zasad.", emptyGoal: "Nie wprowadzono żadnych celów klanu.", emptyTips: "Nie wprowadzono żadnych porad.", error: "Nie udało się załadować zasad dla tego języka." }
         };
 
         async function loadLanguageRules(lang, buttonElement) {
