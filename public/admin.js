@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const languageSelect = document.getElementById("language");
     const logoutButton = document.getElementById("logout");
 
-    const API_URL = "https://4kill-production.up.railway.app/rules";
+    const API_URL = "/rules";
     let rulesData = {};
     let currentLanguage = "cz";
 
