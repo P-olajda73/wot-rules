@@ -1,4 +1,4 @@
-const API_URL = "https://";
+const API_URL = "/rules";
 
 // Objekt s prekladmi nadpisov pre jednotlivé jazyky
 const translations = {
