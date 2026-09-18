@@ -1,37 +1,122 @@
 <!DOCTYPE html>
-<html lang="sk">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For Kill Army - Rules</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #1e1e24; color: #fff; padding: 20px; margin: 0; text-align: center; }
+        header { margin-bottom: 30px; border-bottom: 1px solid #444; padding-bottom: 20px; }
+        .logo { width: 120px; margin-bottom: 10px; }
+        h1 { color: #ff9f1c; margin: 0; font-size: 2.5em; letter-spacing: 1px; }
+        p { color: #ccc; font-size: 1.1em; }
+        
+        /* 🔹 TLAČÍTKA JAZYKŮ */
+        .lang-container { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .lang-button { padding: 10px 20px; font-size: 15px; font-weight: bold; background: #2a9d8f; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+        .lang-button:hover { background: #218074; }
+        .lang-button.active { background: #ff9f1c; color: #1e1e24; }
+
+        /* 🔹 TŘI SLOUPCE VEDLE SEBE PRO HRÁČE */
+        .columns-container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; text-align: left; flex-wrap: wrap; }
+        .column { flex: 1; min-width: 300px; background: #2a2a35; padding: 20px; border-radius: 8px; border: 1px solid #3a3a45; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        
+        h3 { color: #ff9f1c; border-bottom: 1px solid #444; padding-bottom: 8px; margin-top: 0; margin-bottom: 15px; font-size: 1.3em; }
+        ul, ol { padding-left: 20px; margin: 0; color: #eee; font-size: 1.05em; line-height: 1.6; }
+        li { margin-bottom: 10px; }
+        
+        /* Skrytí obsahu před zvolením jazyka */
+        #content-section { display: none; }
+    </style>
 </head>
 <body>
+
     <header>
-        <div class="header-container">
-            <img width="200px" src="logo.png"/>
-            <h1>For Kill Army - Rules</h1>
-            <img width="200px" src="logo.png"/>
-        </div>
+        <img class="logo" src="logo.png" alt="For Kill Army Logo">
+        <h1>For Kill Army</h1>
+        <p>Vyberte jazyk pre zobrazenie pravidiel / Vyberte jazyk pro zobrazení pravidel.</p>
     </header>
-    <main>
-        <div class="container">
-            <nav class="lang-buttons">
-                <button onclick="changeLanguage('cz')">Čeština</button>
-                <button onclick="changeLanguage('en')">English</button>
-                <button onclick="changeLanguage('ru')">Русский</button>
-                <button onclick="changeLanguage('de')">Deutsch</button>
-                <button onclick="changeLanguage('ua')">Українська</button>
-                <button onclick="changeLanguage('pl')">Polski</button>
-            </nav>
-            <div class="rules" id="rules">
-                <p>Vyberte jazyk pre zobrazenie pravidiel.</p>
+
+    <!-- 🔹 VÝBĚR JAZYKŮ -->
+    <div class="lang-container">
+        <button class="lang-button" onclick="loadLanguageRules('cz', this)">Čeština</button>
+        <button class="lang-button" onclick="loadLanguageRules('en', this)">English</button>
+        <button class="lang-button" onclick="loadLanguageRules('ru', this)">Русский</button>
+        <button class="lang-button" onclick="loadLanguageRules('de', this)">Deutsch</button>
+        <button class="lang-button" onclick="loadLanguageRules('ua', this)">Українська</button>
+        <button class="lang-button" onclick="loadLanguageRules('pl', this)">Polski</button>
+    </div>
+
+    <!-- 🔹 SEKCE S VÝSLEDKY VE TŘECH SLOUPCÍCH -->
+    <main id="content-section">
+        <div class="columns-container">
+            
+            <!-- 1. SLOUPEC: PRAVIDLA -->
+            <div class="column">
+                <h3>Pravidlá klanu / Pravidla klanu</h3>
+                <ol id="rulesList"></ol>
             </div>
+
+            <!-- 2. SLOUPEC: CÍLE -->
+            <div class="column">
+                <h3>Cieľ klanu / Cíl klanu</h3>
+                <ul id="goalList"></ul>
+            </div>
+
+            <!-- 3. SLOUPEC: TIPY -->
+            <div class="column">
+                <h3>Tipy a rady</h3>
+                <ul id="tipsList"></ul>
+            </div>
+
         </div>
     </main>
-    <footer>
-        <p>&copy; 2025 World of Tanks Clan For Kill Army</p>
-    </footer>
-    <script src="script.js"></script>
+
+    <script>
+        async function loadLanguageRules(lang, buttonElement) {
+            // Zvýraznění aktivního tlačítka
+            document.querySelectorAll('.lang-button').forEach(btn => btn.classList.remove('active'));
+            if(buttonElement) buttonElement.classList.add('active');
+
+            const rulesList = document.getElementById("rulesList");
+            const goalList = document.getElementById("goalList");
+            const tipsList = document.getElementById("tipsList");
+            const contentSection = document.getElementById("content-section");
+
+            // Vyčištění starého obsahu
+            rulesList.innerHTML = "";
+            goalList.innerHTML = "";
+            tipsList.innerHTML = "";
+
+            try {
+                const response = await fetch(`/rules/${lang}`);
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Vykreslení Pravidel (Číslovaný seznam)
+                    if (data.rules && data.rules.length > 0) {
+                        data.rules.forEach(item => rulesList.innerHTML += `<li>${item}</li>`);
+                    } else { rulesList.innerHTML = "<li>Žádná pravidla nebyla zadána.</li>"; }
+
+                    // Vykreslení Cílů (Odrážky)
+                    if (data.goal && data.goal.length > 0) {
+                        data.goal.forEach(item => goalList.innerHTML += `<li>${item}</li>`);
+                    } else { goalList.innerHTML = "<li>Žádné klanové cíle nebyly zadány.</li>"; }
+
+                    // Vykreslení Tipů (Odrážky)
+                    if (data.tips && data.tips.length > 0) {
+                        data.tips.forEach(item => tipsList.innerHTML += `<li>${item}</li>`);
+                    } else { tipsList.innerHTML = "<li>Žádné tipy nebyly zadány.</li>"; }
+
+                    // Zobrazení sekce pro hráče
+                    contentSection.style.display = "block";
+                } else {
+                    alert("Nepodařilo se načíst pravidla pro tento jazyk.");
+                }
+            } catch (err) {
+                console.error("Chyba při stahování pravidel:", err);
+            }
+        }
+    </script>
 </body>
 </html>
