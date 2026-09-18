@@ -8,19 +8,20 @@
         .box { max-width: 600px; margin: 0 auto; background: #2a2a35; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .header-admin { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 15px; }
         h1, h2 { text-align: center; color: #ff9f1c; margin: 0; }
+        h3 { color: #2a9d8f; border-bottom: 1px solid #3a3a45; padding-bottom: 5px; margin-top: 25px; }
         .input-group { display: flex; margin-bottom: 10px; }
-        input { flex: 1; padding: 10px; border: none; border-radius: 4px; font-size: 14px; }
+        input { flex: 1; padding: 10px; border: none; border-radius: 4px; font-size: 14px; background: #fff; color: #000; }
         .btn-del { margin-left: 10px; background: #e63946; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn { padding: 10px 15px; background: #2a9d8f; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 5px; }
         .btn-logout { background: #555; padding: 8px 12px; font-size: 12px; }
         .btn-logout:hover { background: #e63946; }
-        #save { display: block; width: 100%; padding: 12px; background: #ff9f1c; color: #1e1e24; font-size: 16px; font-weight: bold; margin-top: 20px; border: none; border-radius: 4px; cursor: pointer; }
+        #save { display: block; width: 100%; padding: 12px; background: #ff9f1c; color: #1e1e24; font-size: 16px; font-weight: bold; margin-top: 30px; border: none; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <script>
-        // 🔒 ZÁMEK: Pokud v paměti prohlížeče chybí příznak přihlášení, okamžitě odhodíme uživatele na login.html
+        // 🔒 ZÁMEK: Pokud v paměti chybí příznak přihlášení, okamžitě odhodíme uživatele na login.html
         if (localStorage.getItem("loggedIn") !== "true") {
             window.location.href = "login.html";
         }
@@ -43,15 +44,34 @@
             </select>
         </div>
 
+        <!-- 🔹 SEKCE 1: TIPY A RADY -->
+        <div>
+            <h3>Tipy a rady</h3>
+            <div id="tipsArea">
+                <div class="input-group"><input type="text" class="t-input" value="Napište první klanový tip..."><button class="btn-del" onclick="this.parentElement.remove()">X</button></div>
+            </div>
+            <button class="btn" onclick="addNode('tipsArea', 't-input')">+ Přidat další řádek tipů</button>
+        </div>
+
+        <!-- 🔹 SEKCE 2: CO JE CÍLEM KLANU -->
+        <div>
+            <h3>Co je cílem klanu?</h3>
+            <div id="goalArea">
+                <div class="input-group"><input type="text" class="g-input" value="Napište první cíl klanu..."><button class="btn-del" onclick="this.parentElement.remove()">X</button></div>
+            </div>
+            <button class="btn" onclick="addNode('goalArea', 'g-input')">+ Přidat další řádek cílů</button>
+        </div>
+
+        <!-- 🔹 SEKCE 3: PRAVIDLA KLANU -->
         <div>
             <h3>Pravidla klanu</h3>
             <div id="rulesArea">
                 <div class="input-group"><input type="text" class="r-input" value="Napište první klanové pravidlo..."><button class="btn-del" onclick="this.parentElement.remove()">X</button></div>
             </div>
-            <button class="btn" onclick="addNode()">+ Přidat další řádek pravidel</button>
+            <button class="btn" onclick="addNode('rulesArea', 'r-input')">+ Přidat další řádek pravidel</button>
         </div>
 
-        <button id="save">ULOŽIT PRAVIDLA DO DATABÁZE</button>
+        <button id="save">ULOŽIT VŠE DO DATABÁZE</button>
     </div>
 
     <script>
@@ -61,18 +81,31 @@
             window.location.href = "login.html";
         });
 
-        function addNode() {
-            const area = document.getElementById('rulesArea');
+        // Funkce pro dynamické přidávání nových řádků do jakékoliv sekce
+        function addNode(areaId, inputClass) {
+            const area = document.getElementById(areaId);
             const div = document.createElement('div');
             div.className = 'input-group';
-            div.innerHTML = '<input type="text" class="r-input" value=""><button class="btn-del" onclick="this.parentElement.remove()">X</button>';
+            div.innerHTML = `<input type="text" class="${inputClass}" value=""><button class="btn-del" onclick="this.parentElement.remove()">X</button>`;
             area.appendChild(div);
         }
 
+        // Funkce pro odeslání všech sekcí najednou do MongoDB
         document.getElementById("save").addEventListener("click", async () => {
             const language = document.getElementById("lang").value;
-            const payload = { tips: ["Aktivní klan"], goal: ["Vítězství v bitvách"], rules: [] };
+            const payload = { tips: [], goal: [], rules: [] };
 
+            // Posbíráme Tipy
+            document.querySelectorAll(".t-input").forEach((input) => {
+                if (input.value.trim()) payload.tips.push(input.value.trim());
+            });
+
+            // Posbíráme Cíle
+            document.querySelectorAll(".g-input").forEach((input) => {
+                if (input.value.trim()) payload.goal.push(input.value.trim());
+            });
+
+            // Posbíráme Pravidla
             document.querySelectorAll(".r-input").forEach((input) => {
                 if (input.value.trim()) payload.rules.push(input.value.trim());
             });
@@ -85,7 +118,7 @@
                 });
 
                 if (response.ok) {
-                    alert("ÚSPĚCH! Pravidla byla trvale uložena do vaší databáze MongoDB!");
+                    alert("ÚSPĚCH! Tipy, cíle i pravidla byla trvale uložena do vaší databáze MongoDB!");
                 } else {
                     alert("Chyba při ukládání na server.");
                 }
