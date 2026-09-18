@@ -13,6 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
     let rulesData = {};
     let currentLanguage = "cz";
 
+    // 🔒 SPRÁVNÝ PŘIHLAŠOVACÍ ZÁMEK: Pokud uživatel není přihlášen, pošleme ho na login
+    if (localStorage.getItem("loggedIn") !== "true") {
+        window.location.href = "login.html";
+        return; // Zastavíme provádění skriptu
+    }
+
     if (logoutButton) {
         logoutButton.addEventListener("click", () => {
             localStorage.setItem("loggedIn", "false");
