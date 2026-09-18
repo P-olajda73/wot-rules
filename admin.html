@@ -4,18 +4,25 @@
     <meta charset="UTF-8">
     <title>Admin Panel - For Kill Army</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #1e1e24; color: #fff; padding: 30px; }
-        .box { max-width: 600px; margin: 0 auto; background: #2a2a35; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        body { font-family: Arial, sans-serif; background-color: #1e1e24; color: #fff; padding: 20px; margin: 0; }
+        .box { max-width: 1200px; margin: 0 auto; background: #2a2a35; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .header-admin { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 15px; }
         h1, h2 { text-align: center; color: #ff9f1c; margin: 0; }
-        h3 { color: #2a9d8f; border-bottom: 1px solid #3a3a45; padding-bottom: 5px; margin-top: 25px; }
+        
+        /* 🔹 TŘI SLOUPCE VEDLE SEBE */
+        .columns-container { display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap; }
+        .column { flex: 1; min-width: 300px; background: #22222b; padding: 15px; border-radius: 6px; border: 1px solid #3a3a45; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        h3 { color: #2a9d8f; border-bottom: 1px solid #3a3a45; padding-bottom: 5px; margin-top: 0; margin-bottom: 15px; }
+        .inputs-wrapper { flex-grow: 1; }
         .input-group { display: flex; margin-bottom: 10px; }
         input { flex: 1; padding: 10px; border: none; border-radius: 4px; font-size: 14px; background: #fff; color: #000; }
         .btn-del { margin-left: 10px; background: #e63946; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .btn { padding: 10px 15px; background: #2a9d8f; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 5px; }
-        .btn-logout { background: #555; padding: 8px 12px; font-size: 12px; }
+        .btn { padding: 10px 15px; background: #2a9d8f; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; width: 100%; display: block; text-align: center; box-sizing: border-box; }
+        .btn-logout { background: #555; padding: 8px 12px; font-size: 12px; width: auto; display: inline-block; margin-top: 0; }
         .btn-logout:hover { background: #e63946; }
-        #save { display: block; width: 100%; padding: 12px; background: #ff9f1c; color: #1e1e24; font-size: 16px; font-weight: bold; margin-top: 30px; border: none; border-radius: 4px; cursor: pointer; }
+        #save { display: block; width: 100%; padding: 15px; background: #ff9f1c; color: #1e1e24; font-size: 18px; font-weight: bold; margin-top: 30px; border: none; border-radius: 4px; cursor: pointer; letter-spacing: 1px; }
+        #save:hover { background: #e68a00; }
     </style>
 </head>
 <body>
@@ -34,38 +41,48 @@
         </div>
         <h2>Správa klanových pravidel</h2>
     
-        <div style="margin-bottom: 20px; text-align: center;">
-            <label style="font-weight: bold;">Zvolit jazyk pro úpravu:</label>
-            <select id="lang" style="padding: 5px; margin-left: 10px; font-size: 14px;">
-    <option value="cz">Čeština</option>
-    <option value="en">Angličtina</option>
-    <option value="ru">Ruština</option>
-    <option value="de">Němčina</option>
-    <option value="ua">Ukrajinština</option>
-    <option value="pl">Polština</option>
-</select>
-
+        <div style="margin-bottom: 20px; text-align: center; margin-top: 15px;">
+            <label style="font-weight: bold; font-size: 16px;">Zvolit jazyk pro úpravu:</label>
+            <select id="lang" style="padding: 6px; margin-left: 10px; font-size: 15px; border-radius: 4px; cursor: pointer;">
+                <option value="cz">Čeština</option>
+                <option value="en">English</option>
+                <option value="ru">Ruština</option>
+                <option value="de">Němčina</option>
+                <option value="ua">Ukrajinčina</option>
+                <option value="pl">Polština</option>
+            </select>
         </div>
 
-        <!-- 🔹 SEKCE 1: TIPY A RADY -->
-        <div>
-            <h3>Tipy a rady</h3>
-            <div id="tipsArea"></div>
-            <button class="btn" onclick="addNode('tipsArea', 't-input', '')">+ Přidat další řádek tipů</button>
-        </div>
+        <!-- 🔹 KONTEJNER PRO SLOUPCE VEDLE SEBE -->
+        <div class="columns-container">
+            
+            <!-- 1. SLOUPEC: PRAVIDLA KLANU -->
+            <div class="column">
+                <div class="inputs-wrapper">
+                    <h3>Pravidla klanu</h3>
+                    <div id="rulesArea"></div>
+                </div>
+                <button class="btn" onclick="addNode('rulesArea', 'r-input', '')">+ Přidat řádek pravidel</button>
+            </div>
 
-        <!-- 🔹 SEKCE 2: CO JE CÍLEM KLANU -->
-        <div>
-            <h3>Co je cílem klanu?</h3>
-            <div id="goalArea"></div>
-            <button class="btn" onclick="addNode('goalArea', 'g-input', '')">+ Přidat další řádek cílů</button>
-        </div>
+            <!-- 2. SLOUPEC: CO JE CÍLEM KLANU -->
+            <div class="column">
+                <div class="inputs-wrapper">
+                    <h3>Co je cílem klanu?</h3>
+                    <div id="goalArea"></div>
+                </div>
+                <button class="btn" onclick="addNode('goalArea', 'g-input', '')">+ Přidat řádek cílů</button>
+            </div>
 
-        <!-- 🔹 SEKCE 3: PRAVIDLA KLANU -->
-        <div>
-            <h3>Pravidla klanu</h3>
-            <div id="rulesArea"></div>
-            <button class="btn" onclick="addNode('rulesArea', 'r-input', '')">+ Přidat další řádek pravidel</button>
+            <!-- 3. SLOUPEC: TIPY A RADY -->
+            <div class="column">
+                <div class="inputs-wrapper">
+                    <h3>Tipy a rady</h3>
+                    <div id="tipsArea"></div>
+                </div>
+                <button class="btn" onclick="addNode('tipsArea', 't-input', '')">+ Přidat řádek tipů</button>
+            </div>
+
         </div>
 
         <button id="save">ULOŽIT VŠE DO DATABÁZE</button>
@@ -87,7 +104,7 @@
             area.appendChild(div);
         }
 
-        // 🔄 Nová funkce: Načte stávající data z databáze a vyplní je do políček
+        // 🔄 Funkce: Načte stávající data z databáze a vyplní je do políček
         async function loadCurrentRules() {
             const language = document.getElementById("lang").value;
             
@@ -102,19 +119,19 @@
                     const data = await response.json();
                     
                     // Pokud data v DB existují, vykreslíme je do políček
-                    if (data.tips && data.tips.length > 0) data.tips.forEach(val => addNode('tipsArea', 't-input', val));
-                    else addNode('tipsArea', 't-input', 'Napište první klanový tip...');
+                    if (data.rules && data.rules.length > 0) data.rules.forEach(val => addNode('rulesArea', 'r-input', val));
+                    else addNode('rulesArea', 'r-input', 'Napište první klanové pravidlo...');
 
                     if (data.goal && data.goal.length > 0) data.goal.forEach(val => addNode('goalArea', 'g-input', val));
                     else addNode('goalArea', 'g-input', 'Napište první cíl klanu...');
 
-                    if (data.rules && data.rules.length > 0) data.rules.forEach(val => addNode('rulesArea', 'r-input', val));
-                    else addNode('rulesArea', 'r-input', 'Napište první klanové pravidlo...');
+                    if (data.tips && data.tips.length > 0) data.tips.forEach(val => addNode('tipsArea', 't-input', val));
+                    else addNode('tipsArea', 't-input', 'Napište první klanový tip...');
                 } else {
                     // Pokud pro daný jazyk nic v DB není, dáme jedno prázdné pole na začátek
-                    addNode('tipsArea', 't-input', '');
-                    addNode('goalArea', 'g-input', '');
                     addNode('rulesArea', 'r-input', '');
+                    addNode('goalArea', 'g-input', '');
+                    addNode('tipsArea', 't-input', '');
                 }
             } catch (err) {
                 console.error("Chyba při načítání dat:", err);
@@ -152,7 +169,7 @@
                 });
 
                 if (response.ok) {
-                    alert("ÚSPĚCH! Tipy, cíle i pravidla byla trvale uložena do vaší databáze MongoDB!");
+                    alert("ÚSPĚCH! Pravidla, cíle i tipy byla trvale uložena do vaší databáze MongoDB!");
                     loadCurrentRules(); // Znovu načteme čistá data pro kontrolu
                 } else {
                     alert("Chyba při ukládání na server.");
