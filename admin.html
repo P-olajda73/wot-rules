@@ -35,7 +35,7 @@
         <h2>Správa klanových pravidel</h2>
     
         <div style="margin-bottom: 20px; text-align: center;">
-            <label style="font-weight: bold;">Zvolit jazyk pro uložení:</label>
+            <label style="font-weight: bold;">Zvolit jazyk pro úpravu:</label>
             <select id="lang" style="padding: 5px; margin-left: 10px; font-size: 14px;">
                 <option value="cz">Čeština</option>
                 <option value="en">English</option>
@@ -47,28 +47,22 @@
         <!-- 🔹 SEKCE 1: TIPY A RADY -->
         <div>
             <h3>Tipy a rady</h3>
-            <div id="tipsArea">
-                <div class="input-group"><input type="text" class="t-input" value="Napište první klanový tip..."><button class="btn-del" onclick="this.parentElement.remove()">X</button></div>
-            </div>
-            <button class="btn" onclick="addNode('tipsArea', 't-input')">+ Přidat další řádek tipů</button>
+            <div id="tipsArea"></div>
+            <button class="btn" onclick="addNode('tipsArea', 't-input', '')">+ Přidat další řádek tipů</button>
         </div>
 
         <!-- 🔹 SEKCE 2: CO JE CÍLEM KLANU -->
         <div>
             <h3>Co je cílem klanu?</h3>
-            <div id="goalArea">
-                <div class="input-group"><input type="text" class="g-input" value="Napište první cíl klanu..."><button class="btn-del" onclick="this.parentElement.remove()">X</button></div>
-            </div>
-            <button class="btn" onclick="addNode('goalArea', 'g-input')">+ Přidat další řádek cílů</button>
+            <div id="goalArea"></div>
+            <button class="btn" onclick="addNode('goalArea', 'g-input', '')">+ Přidat další řádek cílů</button>
         </div>
 
         <!-- 🔹 SEKCE 3: PRAVIDLA KLANU -->
         <div>
             <h3>Pravidla klanu</h3>
-            <div id="rulesArea">
-                <div class="input-group"><input type="text" class="r-input" value="Napište první klanové pravidlo..."><button class="btn-del" onclick="this.parentElement.remove()">X</button></div>
-            </div>
-            <button class="btn" onclick="addNode('rulesArea', 'r-input')">+ Přidat další řádek pravidel</button>
+            <div id="rulesArea"></div>
+            <button class="btn" onclick="addNode('rulesArea', 'r-input', '')">+ Přidat další řádek pravidel</button>
         </div>
 
         <button id="save">ULOŽIT VŠE DO DATABÁZE</button>
@@ -81,31 +75,68 @@
             window.location.href = "login.html";
         });
 
-        // Funkce pro dynamické přidávání nových řádků do jakékoliv sekce
-        function addNode(areaId, inputClass) {
+        // Funkce pro dynamické přidávání nových řádků
+        function addNode(areaId, inputClass, value) {
             const area = document.getElementById(areaId);
             const div = document.createElement('div');
             div.className = 'input-group';
-            div.innerHTML = `<input type="text" class="${inputClass}" value=""><button class="btn-del" onclick="this.parentElement.remove()">X</button>`;
+            div.innerHTML = `<input type="text" class="${inputClass}" value="${value}"><button class="btn-del" onclick="this.parentElement.remove()">X</button>`;
             area.appendChild(div);
         }
+
+        // 🔄 Nová funkce: Načte stávající data z databáze a vyplní je do políček
+        async function loadCurrentRules() {
+            const language = document.getElementById("lang").value;
+            
+            // Vyčistíme stará pole na obrazovce
+            document.getElementById("tipsArea").innerHTML = "";
+            document.getElementById("goalArea").innerHTML = "";
+            document.getElementById("rulesArea").innerHTML = "";
+
+            try {
+                const response = await fetch(`/rules/${language}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Pokud data v DB existují, vykreslíme je do políček
+                    if (data.tips && data.tips.length > 0) data.tips.forEach(val => addNode('tipsArea', 't-input', val));
+                    else addNode('tipsArea', 't-input', 'Napište první klanový tip...');
+
+                    if (data.goal && data.goal.length > 0) data.goal.forEach(val => addNode('goalArea', 'g-input', val));
+                    else addNode('goalArea', 'g-input', 'Napište první cíl klanu...');
+
+                    if (data.rules && data.rules.length > 0) data.rules.forEach(val => addNode('rulesArea', 'r-input', val));
+                    else addNode('rulesArea', 'r-input', 'Napište první klanové pravidlo...');
+                } else {
+                    // Pokud pro daný jazyk nic v DB není, dáme jedno prázdné pole na začátek
+                    addNode('tipsArea', 't-input', '');
+                    addNode('goalArea', 'g-input', '');
+                    addNode('rulesArea', 'r-input', '');
+                }
+            } catch (err) {
+                console.error("Chyba při načítání dat:", err);
+            }
+        }
+
+        // Načíst data při změně jazyka v menu
+        document.getElementById("lang").addEventListener("change", loadCurrentRules);
+
+        // Načíst data automaticky ihned při otevření stránky admin panelu
+        loadCurrentRules();
 
         // Funkce pro odeslání všech sekcí najednou do MongoDB
         document.getElementById("save").addEventListener("click", async () => {
             const language = document.getElementById("lang").value;
             const payload = { tips: [], goal: [], rules: [] };
 
-            // Posbíráme Tipy
             document.querySelectorAll(".t-input").forEach((input) => {
                 if (input.value.trim()) payload.tips.push(input.value.trim());
             });
 
-            // Posbíráme Cíle
             document.querySelectorAll(".g-input").forEach((input) => {
                 if (input.value.trim()) payload.goal.push(input.value.trim());
             });
 
-            // Posbíráme Pravidla
             document.querySelectorAll(".r-input").forEach((input) => {
                 if (input.value.trim()) payload.rules.push(input.value.trim());
             });
@@ -119,6 +150,7 @@
 
                 if (response.ok) {
                     alert("ÚSPĚCH! Tipy, cíle i pravidla byla trvale uložena do vaší databáze MongoDB!");
+                    loadCurrentRules(); // Znovu načteme čistá data pro kontrolu
                 } else {
                     alert("Chyba při ukládání na server.");
                 }
