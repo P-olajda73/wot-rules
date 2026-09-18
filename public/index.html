@@ -18,7 +18,7 @@
             text-align: center; 
         }
         
-        /* 🔹 HORNÍ ZÁHLAVÍ: LOGA PO STRANÁCH A NÁPIS UPROSTŘED */
+        /* 🔹 HORNÍ ZÁHLAVÍ: ZVĚTŠENÁ LOGA PO STRANÁCH A VELKÝ NÁPIS UPROSTŘED */
         header { 
             max-width: 1200px;
             margin: 0 auto 30px auto; 
@@ -34,18 +34,27 @@
             padding: 0 20px;
         }
         .logo-side { 
-            width: 100px; 
+            width: 140px; /* ✅ UPRAVENO: Loga zvětšena ze 100px na 140px */
             height: auto;
             flex-shrink: 0;
         }
         
-        h1 { color: #ff9f1c; margin: 0; font-size: 2.5em; letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        p { color: #ccc; font-size: 1.1em; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 5px; margin-bottom: 0; }
+        /* ✅ UPRAVENO: Hlavní nadpis zvětšen a nastaven na VELKÁ PÍSMENA (uppercase) */
+        h1 { 
+            color: #ff9f1c; 
+            margin: 0; 
+            font-size: 3.2em; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.9); 
+        }
+        p { color: #ccc; font-size: 1.1em; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 8px; margin-bottom: 0; }
         
         /* Přizpůsobení pro mobily – na malém displeji dáme loga nad sebe, aby se text nemačkal */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             header { flex-direction: column; gap: 15px; }
-            .logo-side { width: 80px; }
+            .logo-side { width: 100px; }
+            h1 { font-size: 2.3em; }
         }
 
         /* 🔹 TLAČÍTKA JAZYKŮ */
@@ -56,11 +65,24 @@
 
         /* 🔹 TŘI SLOUPCE VEDLE SEBE PRO HRÁČE */
         .columns-container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; text-align: left; flex-wrap: wrap; }
-        .column { flex: 1; min-width: 300px; background: rgba(42, 42, 53, 0.9); padding: 20px; border-radius: 8px; border: 1px solid rgba(58, 58, 69, 0.6); box-shadow: 0 4px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
+        
+        /* ✅ UPRAVENO: Pozadí oken zesvětleno (průhlednost 0.65 místo 0.9), přibyl blur podkladu */
+        .column { 
+            flex: 1; 
+            min-width: 300px; 
+            background: rgba(50, 50, 65, 0.65); 
+            padding: 20px; 
+            border-radius: 8px; 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6); 
+            backdrop-filter: blur(4px); 
+        }
         
         h3 { color: #ff9f1c; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 8px; margin-top: 0; margin-bottom: 15px; font-size: 1.3em; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); text-align: center; }
         ul, ol { padding-left: 20px; margin: 0; color: #eee; font-size: 1.05em; line-height: 1.6; }
-        li { margin-bottom: 10px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        
+        /* ✅ UPRAVENO: Silnější stín textu u pravidel, aby šel perfektně přečíst i na světlejším podkladu */
+        li { margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
         
         /* Skrytí obsahu před zvolením jazyka */
         #content-section { display: none; }
@@ -106,7 +128,7 @@
 
             <!-- 3. SLOUPEC: TIPY -->
             <div class="column">
-                <h3 id="labelTips">Tipy a rady</h3>
+                <h3>Tipy a rady</h3>
                 <ul id="tipsList"></ul>
             </div>
 
@@ -114,7 +136,7 @@
     </main>
 
     <script>
-        // 🔹 Slovník pro automatický překlad pevných textů a nadpisů na stránce
+        // Slovník pro automatický překlad pevných textů a nadpisů na stránce
         const translations = {
             cz: { sub: "Vyberte jazyk pro zobrazení pravidel.", rules: "Pravidla klanu", goal: "Co je cílem klanu", tips: "Tipy a rady", emptyRules: "Žádná pravidla nebyla zadána.", emptyGoal: "Žádné klanové cíle nebyly zadány.", emptyTips: "Žádné tipy nebyly zadány.", error: "Nepodařilo se načíst pravidla pro tento jazyk." },
             en: { sub: "Select a language to display the rules.", rules: "Clan Rules", goal: "Clan Goals", tips: "Tips and Tricks", emptyRules: "No rules have been entered.", emptyGoal: "No clan goals have been entered.", emptyTips: "No tips have been entered.", error: "Failed to load rules for this language." },
@@ -133,13 +155,11 @@
             const tipsList = document.getElementById("tipsList");
             const contentSection = document.getElementById("content-section");
             
-            // Prvky pro dynamický překlad nadpisů
             const subTitle = document.getElementById("subTitle");
             const labelRules = document.getElementById("labelRules");
             const labelGoal = document.getElementById("labelGoal");
             const labelTips = document.getElementById("labelTips");
 
-            // 🔄 Změna nadpisů podle zvoleného jazyka ze slovníku
             const t = translations[lang] || translations['cz'];
             subTitle.innerText = t.sub;
             labelRules.innerText = t.rules;
