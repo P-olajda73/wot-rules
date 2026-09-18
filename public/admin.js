@@ -17,12 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "login.html";
     }
 
-    if (logoutButton) {
-        logoutButton.addEventListener("click", () => {
-            localStorage.setItem("loggedIn", "false");
-            window.location.href = "login.html";
-        });
-    }
+    if (localStorage.getItem("loggedIn") !== "true") {
+    window.location.href = "login.html";
+}
 
     // ✅ Načíta pravidlá zo servera
     async function loadRules() {
