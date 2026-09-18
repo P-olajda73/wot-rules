@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <img width="100px" src="logo.png"/>
+            <h1>Admin Panel</h1>
+            <button id="logout" class="button button-logout">Odhlásiť sa</button>
+        </div>
+    </header>
+    <main class="admin-container">
+        <h2>Správa Pravidiel</h2>
+    
+        <div class="lang-select">
+            <label for="language">Vyber jazyk:</label>
+            <select id="language">
+                <option class="option" value="cz">Čeština</option>
+                <option class="option" value="en">English</option>
+                <option class="option" value="ru">Ruština</option>
+                <option class="option" value="de">Nemčina</option>
+                <option class="option" value="ua">Ukrajinčina</option>
+                <option class="option" value="pl">Polština</option>
+            </select>
+        </div>
+        <div class="section-container">
+            <div class="section">
+                <h3>Tipy</h3>
+                <div id="tipsContainer"></div>
+                <button id="addTip" class="button">Pridať Tip</button>
+            </div>
+
+            <div class="section">
+                <h3>Cieľ klanu</h3>
+                <div id="goalContainer"></div>
+                <button id="addGoal" class="button">Pridať Cieľ</button>
+            </div>
+            <div class="section">
+                <h3>Pravidlá</h3>
+                <div id="rulesContainer"></div>
+                <button id="addRule" class="button">Pridať Pravidlo</button>
+            </div>
+        </div>
+        <br>
+        <button id="saveRules" class="button">Uložiť pravidlá</button>
+    </main>
+    
+    
+    <script src="admin.js"></script>
+</body>
+</html>
