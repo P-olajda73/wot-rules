@@ -7,45 +7,39 @@ document.addEventListener("DOMContentLoaded", () => {
     const addRuleButton = document.getElementById("addRule");
     const saveButton = document.getElementById("saveRules");
     const languageSelect = document.getElementById("language");
-    const logoutButton = document.getElementById("logout");
 
     const API_URL = "/rules";
-    let rulesData = {};
+    let rulesData = {
+        cz: { tips: ["První testovací tip"], goal: ["První testovací cíl"], rules: ["První testovací pravidlo"] }
+    };
     let currentLanguage = "cz";
-
-    // 🔒 SPRÁVNÝ PŘIHLAŠOVACÍ ZÁMEK: Pokud uživatel není přihlášen, pošleme ho na login
-    if (localStorage.getItem("loggedIn") !== "true") {
-        window.location.href = "login.html";
-        return; // Zastavíme provádění skriptu
-    }
-
-    if (logoutButton) {
-        logoutButton.addEventListener("click", () => {
-            localStorage.setItem("loggedIn", "false");
-            window.location.href = "login.html";
-        });
-    }
 
     // ✅ Načíta pravidlá zo servera
     async function loadRules() {
         try {
             const response = await fetch(`${API_URL}/${currentLanguage}`);
-            if (!response.ok) throw new Error("Server neodpovedá správne.");
-            rulesData[currentLanguage] = await response.json();
-            renderForm();
+            if (response.ok) {
+                rulesData[currentLanguage] = await response.json();
+            }
         } catch (error) {
-            console.error("Chyba pri načítaní pravidiel:", error);
-            rulesData[currentLanguage] = { tips: [], goal: [], rules: [] };
+            console.error("Chyba pri načítaní pravidiel zo servera:", error);
         }
+        renderForm(); // Vykreslíme formulář VŽDY, i při chybě serveru
     }
 
     // ✅ Vykreslí formulár pre aktuálny jazyk
     function renderForm() {
+        if (!tipsContainer || !goalContainer || !rulesContainer) return;
+        
         tipsContainer.innerHTML = "";
         goalContainer.innerHTML = "";
         rulesContainer.innerHTML = "";
 
-        const langData = rulesData[currentLanguage] || { tips: [], goal: [], rules: [] };
+        if (!rulesData[currentLanguage]) {
+            rulesData[currentLanguage] = { tips: [""], goal: [""], rules: [""] };
+        }
+
+        const langData = rulesData[currentLanguage];
 
         langData.tips.forEach((tip, index) => {
             tipsContainer.innerHTML += createInputElement("tips", index, tip);
@@ -65,9 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // ✅ Vytvorí HTML input + delete button
     function createInputElement(type, index, value) {
         return `
-            <div class="input-group">
-                <input type="text" data-type="${type}" data-index="${index}" value="${value || ''}" class="text-input">
-                <button class="delete-button" data-type="${type}" data-index="${index}">X</button>
+            <div class="input-group" style="display: flex; margin-bottom: 5px;">
+                <input type="text" data-type="${type}" data-index="${index}" value="${value || ''}" class="text-input" style="flex: 1; padding: 5px;">
+                <button class="delete-button" data-type="${type}" data-index="${index}" style="margin-left: 5px; padding: 5px; color: red; cursor: pointer; font-weight: bold;">X</button>
             </div>
         `;
     }
@@ -75,53 +69,53 @@ document.addEventListener("DOMContentLoaded", () => {
     // ✅ Pridá event listener na delete buttons
     function attachDeleteListeners() {
         document.querySelectorAll(".delete-button").forEach((button) => {
-            button.addEventListener("click", async (e) => {
+            button.replaceWith(button.cloneNode(true)); // Vyčištění starých listenerů
+        });
+
+        document.querySelectorAll(".delete-button").forEach((button) => {
+            button.addEventListener("click", (e) => {
                 const type = e.target.getAttribute("data-type");
-                const index = parseInt(e.target.getAttribute("data-index"));
+                const index = parseInt(e.target.getAttribute("data-index"), 10);
 
-                try {
-                    const response = await fetch(`${API_URL}/${currentLanguage}/${type}/${index}`, {
-                        method: "DELETE",
-                    });
-
-                    if (!response.ok) throw new Error("Chyba pri odstraňovaní pravidla.");
-                    console.log("Pravidlo vymazané.");
-
+                if (rulesData[currentLanguage] && rulesData[currentLanguage][type]) {
                     rulesData[currentLanguage][type].splice(index, 1);
                     renderForm();
-                } catch (error) {
-                    console.error("Chyba pri odstraňovaní pravidla:", error);
                 }
             });
         });
     }
 
     // ✅ Pridanie nového tipu
-    addTipButton.addEventListener("click", () => {
-        rulesData[currentLanguage].tips.push("");
-        renderForm();
-    });
+    if (addTipButton) {
+        addTipButton.addEventListener("click", () => {
+            if (!rulesData[currentLanguage]) rulesData[currentLanguage] = { tips: [], goal: [], rules: [] };
+            rulesData[currentLanguage].tips.push("");
+            renderForm();
+        });
+    }
 
     // ✅ Pridanie nového cieľa
-    addGoalButton.addEventListener("click", () => {
-        rulesData[currentLanguage].goal.push("");
-        renderForm();
-    });
+    if (addGoalButton) {
+        addGoalButton.addEventListener("click", () => {
+            if (!rulesData[currentLanguage]) rulesData[currentLanguage] = { tips: [], goal: [], rules: [] };
+            rulesData[currentLanguage].goal.push("");
+            renderForm();
+        });
+    }
 
     // ✅ Pridanie nového pravidla
-    addRuleButton.addEventListener("click", () => {
-        rulesData[currentLanguage].rules.push("");
-        renderForm();
-    });
+    if (addRuleButton) {
+        addRuleButton.addEventListener("click", () => {
+            if (!rulesData[currentLanguage]) rulesData[currentLanguage] = { tips: [], goal: [], rules: [] };
+            rulesData[currentLanguage].rules.push("");
+            renderForm();
+        });
+    }
 
     // ✅ Uloženie pravidiel na server
     async function saveRules() {
         try {
-            const updatedRules = {
-                tips: [],
-                goal: [],
-                rules: []
-            };
+            const updatedRules = { tips: [], goal: [], rules: [] };
 
             document.querySelectorAll("input[data-type=tips]").forEach((input) => {
                 if (input.value.trim()) updatedRules.tips.push(input.value.trim());
@@ -135,11 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (input.value.trim()) updatedRules.rules.push(input.value.trim());
             });
 
-            if (!updatedRules.tips.length && !updatedRules.goal.length && !updatedRules.rules.length) {
-                alert("Nie sú žiadne údaje na uloženie.");
-                return;
-            }
-
             const response = await fetch(`${API_URL}/${currentLanguage}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -147,20 +136,25 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (!response.ok) throw new Error("Chyba pri ukladaní pravidiel.");
-            alert("Pravidlá boli úspešne uložené!");
+            alert("Pravidlá boli úspešne uložené do databázy!");
         } catch (error) {
             console.error("Chyba pri ukladaní pravidiel:", error);
+            alert("Chyba pri komunikácii so serverom. Skontrolujte logy.");
         }
     }
 
     // ✅ Zmena jazyka
-    languageSelect.addEventListener("change", async (e) => {
-        currentLanguage = e.target.value;
-        await loadRules();
-    });
+    if (languageSelect) {
+        languageSelect.addEventListener("change", async (e) => {
+            currentLanguage = e.target.value;
+            await loadRules();
+        });
+    }
 
     // ✅ Event listener na tlačidlo uloženia
-    saveButton.addEventListener("click", saveRules);
+    if (saveButton) {
+        saveButton.addEventListener("click", saveRules);
+    }
 
     // ✅ Načítanie pravidiel pri štarte
     loadRules();
