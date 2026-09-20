@@ -21,7 +21,7 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("✅ MongoDB Connected"))
     .catch(err => console.error("❌ MongoDB Connection Error:", err));
 
-// 🔹 Definovanie schémy
+// 🔹 Definovanie schémy (Pole řetězců z MongoDB)
 const rulesSchema = new mongoose.Schema({
     language: String,
     tips: [String],
@@ -30,7 +30,6 @@ const rulesSchema = new mongoose.Schema({
 });
 const Rules = mongoose.model("Rules", rulesSchema);
 
-
 // 🔹 Statické súbory (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -38,11 +37,22 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 app.get("/login.html", (req, res) => res.sendFile(path.join(__dirname, "public", "login.html")));
 app.get("/admin.html", (req, res) => res.sendFile(path.join(__dirname, "admin.html")));
-// 🔹 API Endpoints pre pravidlá
+
+// 🔹 API Endpoints pre pravidlá (OPRAVENO: Už nepadá na 404, ale bezpečně vrací prázdná pole)
 app.get("/rules/:language", async (req, res) => {
     try {
         const rules = await Rules.findOne({ language: req.params.language });
-        if (!rules) return res.status(404).json({ error: "Pravidlá neexistujú." });
+        
+        // Pokud jazyk v DB neexistuje, neposíláme chybu 404, ale prázdnou strukturu, aby frontend nezamrzl
+        if (!rules) {
+            return res.json({
+                language: req.params.language,
+                tips: [],
+                goal: [],
+                rules: []
+            });
+        }
+        
         res.json(rules);
     } catch (error) {
         res.status(500).json({ error: "Chyba pri získavaní pravidiel." });
