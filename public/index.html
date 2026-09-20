@@ -33,7 +33,6 @@
             padding: 0 20px;
         }
         
-        /* Obě loga teď používají výhradně tuto třídu, takže budou stoprocentně identická */
         .logo-side { 
             height: 180px; 
             width: auto; 
@@ -94,13 +93,11 @@
 <body>
 
     <header>
-        <!-- Levé logo -->
         <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vlevo">
         <div class="header-title-block">
             <h1>For Kill Army</h1>
             <p id="subTitle">Vyberte jazyk pro zobrazení pravidel.</p>
         </div>
-        <!-- Pravé logo – nyní je přesnou kopií levého loga se stejnou výškou 180px -->
         <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vpravo">
     </header>
 
@@ -135,7 +132,7 @@
     </main>
 
     <script>
-        var translations = {
+        window.translations = {
             "cz": { "sub": "Vyberte jazyk pro zobrazení pravidel.", "rules": "Pravidla klanu", "goal": "Co je cílem klanu", "tips": "Tipy a rady", "emptyRules": "Žádná pravidla nebyla zadána.", "emptyGoal": "Žádné klanové cíle nebyly zadány.", "emptyTips": "Žádné tipy nebyly zadány.", "error": "Nepodařilo se načíst pravidla z databáze." },
             "en": { "sub": "Select a language to display the rules.", "rules": "Clan Rules", "goal": "Clan Goals", "tips": "Tips and Tricks", "emptyRules": "No rules have been entered.", "emptyGoal": "No clan goals have been entered.", "emptyTips": "No tips have been entered.", "error": "Failed to load rules from database." },
             "ru": { "sub": "Vyberite jazyk dlia otobrazenia pravil.", "rules": "Pravila klana", "goal": "Celi klana", "tips": "Sovety i podskazki", "emptyRules": "Pravila ne ukazany.", "emptyGoal": "Celi ne ukazany.", "emptyTips": "Sovety ne ukazany.", "error": "Oshibka BD." },
@@ -157,7 +154,10 @@
             return html === '' ? '<li>' + emptyMessage + '</li>' : html;
         }
 
-        async function loadLanguageRules(lang, buttonElement) {
+        // Definujeme funkci přímo na objekt window, aby byla 100% dostupná globálně pro HTML tlačítka
+        window.loadLanguageRules = async function(lang, buttonElement) {
+            console.log("Funkce spuštěna pro jazyk:", lang);
+
             var buttons = document.getElementsByClassName('lang-button');
             for (var i = 0; i < buttons.length; i++) {
                 buttons[i].classList.remove('active');
@@ -179,7 +179,7 @@
             var labelGoal = document.getElementById("labelGoal");
             var labelTips = document.getElementById("labelTips");
 
-            var t = translations[lang] || translations['cz'];
+            var t = window.translations[lang] || window.translations['cz'];
             
             if (subTitle) subTitle.innerText = t.sub;
             if (labelRules) labelRules.innerText = t.rules;
@@ -207,7 +207,7 @@
                 }
 
             } catch (error) {
-                console.error('Chyba:', error);
+                console.error('Chyba při komunikaci s API:', error);
                 var errorHtml = '<li style="color: #ff4d4d; font-weight: bold;">' + t.error + '</li>';
                 if (rulesList) rulesList.innerHTML = errorHtml;
                 if (goalList) goalList.innerHTML = errorHtml;
