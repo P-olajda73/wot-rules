@@ -34,16 +34,16 @@
             padding: 0 20px;
         }
         .logo-side { 
-            width: 180px; /* ZVĚTŠENO ze 140px */
+            width: 180px; 
             height: auto;
             flex-shrink: 0;
-            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6)); /* Přidán pěkný stín pod loga */
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6)); 
         }
         
         h1 { 
             color: #ff9f1c; 
             margin: 0; 
-            font-size: 4.2em; /* ZVĚTŠENO z 3.2em */
+            font-size: 4.2em; 
             text-transform: uppercase; 
             letter-spacing: 3px; 
             text-shadow: 3px 3px 8px rgba(0,0,0,0.95); 
@@ -57,7 +57,6 @@
             font-weight: bold;
         }
         
-        /* Přizpůsobení pro mobily, aby obří nápis neodcestoval z displeje */
         @media (max-width: 768px) {
             header { flex-direction: column; gap: 15px; }
             .logo-side { width: 120px; }
@@ -88,7 +87,6 @@
         ul, ol { padding-left: 20px; margin: 0; color: #eee; font-size: 1.05em; line-height: 1.6; }
         li { margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
         
-        /* Skrytí obsahu před zvolením jazyka */
         #content-section { display: none; }
     </style>
     <link rel="icon" type="image/png" href="favicon.png">
@@ -96,9 +94,7 @@
 <body>
 
     <header>
-        <!-- Logo na levé straně -->
         <img src="logo.png" alt="For Kill Army Logo" class="logo-side">
-        
         <div class="header-title-block">
             <h1>For Kill Army</h1>
             <div class="welcome-lines">
@@ -110,89 +106,68 @@
                 <p>Wybierz swój język</p>
             </div>
         </div>
-        
-        <!-- Logo na pravé straně -->
         <img src="logo.png" alt="For Kill Army Logo" class="logo-side">
     </header>
 
+    <!-- ZDE JSOU OPRAVENÁ ČISTÁ TLAČÍTKA -->
     <div class="lang-container">
-        <button id="lang-cz" class="lang-button" onclick="window.loadLanguageRules('cz', this)">🇨🇿 CZ</button>
-        <button id="lang-en" class="lang-button" onclick="window.loadLanguageRules('en', this)">🇬🇧 EN</button>
-        <button id="lang-ru" class="lang-button" onclick="window.loadLanguageRules('ru', this)">🇷🇺 RU</button>
-        <button id="lang-de" class="lang-button" onclick="window.loadLanguageRules('de', this)">🇩🇪 DE</button>
-        <button id="lang-ua" class="lang-button" onclick="window.loadLanguageRules('ua', this)">🇺🇦 UA</button>
-        <button id="lang-pl" class="lang-button" onclick="window.loadLanguageRules('pl', this)">🇵🇱 PL</button>
+        <button id="lang-cz" class="lang-button" onclick="window.loadLanguageRules('cz', this)">CZ</button>
+        <button id="lang-en" class="lang-button" onclick="window.loadLanguageRules('en', this)">EN</button>
+        <button id="lang-ru" class="lang-button" onclick="window.loadLanguageRules('ru', this)">RU</button>
+        <button id="lang-de" class="lang-button" onclick="window.loadLanguageRules('de', this)">DE</button>
+        <button id="lang-ua" class="lang-button" onclick="window.loadLanguageRules('ua', this)">UA</button>
+        <button id="lang-pl" class="lang-button" onclick="window.loadLanguageRules('pl', this)">PL</button>
     </div>
 
-    <!-- TŘI SLOUPCE S OBSAHEM (Které předtím chyběly) -->
     <div id="content-section" class="columns-container">
         <div class="column">
             <h3 id="labelRules">Pravidla klanu</h3>
-            <ul id="rulesList">
-                <li>Načítám...</li>
-            </ul>
+            <ul id="rulesList"><li>Načítám...</li></ul>
         </div>
         <div class="column">
             <h3 id="labelGoal">Co je cílem klanu</h3>
-            <ul id="goalList">
-                <li>Načítám...</li>
-            </ul>
+            <ul id="goalList"><li>Načítám...</li></ul>
         </div>
         <div class="column">
             <h3 id="labelTips">Tipy a rady</h3>
-            <ul id="tipsList">
-                <li>Načítám...</li>
-            </ul>
+            <ul id="tipsList"><li>Načítám...</li></ul>
         </div>
     </div>
 
     <script>
         window.translations = {
-            "cz": { "rules": "Pravidla klanu", "goal": "Co je cílem klanu", "tips": "Tipy a rady", "emptyRules": "Žádná pravidla nebyla zadána.", "emptyGoal": "Žádné klanové cíle nebyly zadány.", "emptyTips": "Žádné tipy nebyly zadány.", "error": "Nepodařilo se načíst pravidla z databáze." },
-            "en": { "rules": "Clan Rules", "goal": "Clan Goals", "tips": "Tips and Tricks", "emptyRules": "No rules have been entered.", "emptyGoal": "No clan goals have been entered.", "emptyTips": "No tips have been entered.", "error": "Failed to load rules." },
-            "ru": { "rules": "Правила клана", "goal": "Цели клана", "tips": "Tips", "emptyRules": "Нет правил.", "emptyGoal": "Нет целей.", "emptyTips": "Нет советов.", "error": "Ошибка." },
+            "cz": { "rules": "Pravidla klanu", "goal": "Co je cílem klanu", "tips": "Tipy a rady", "emptyRules": "Žádná pravidla nebyla zadána.", "emptyGoal": "Žádné klanové cíle nebyly zadány.", "emptyTips": "Žádné tipy nebyly zadány.", "error": "Nepodařilo se načíst pravidla." },
+            "en": { "rules": "Clan Rules", "goal": "Clan Goals", "tips": "Tips and Tricks", "emptyRules": "No rules.", "emptyGoal": "No clan goals.", "emptyTips": "No tips.", "error": "Failed to load rules." },
+            "ru": { "rules": "Правила клана", "goal": "Цели клана", "tips": "Советы", "emptyRules": "Нет правил.", "emptyGoal": "Нет целей.", "emptyTips": "Нет советов.", "error": "Ошибка." },
             "de": { "rules": "Clan-Regeln", "goal": "Clan-Ziele", "tips": "Tipps", "emptyRules": "Keine Regeln.", "emptyGoal": "Keine Ziele.", "emptyTips": "Keine Tipps.", "error": "Fehler." },
-            "ua": { "rules": "Правила клану", "goal": "Цілі клану", "tips": "Porady", "emptyRules": "Немає правил.", "emptyGoal": "Немає цілей.", "emptyTips": "Немає порад.", "error": "Помилка." },
+            "ua": { "rules": "Правила клану", "goal": "Цілі клану", "tips": "Поради", "emptyRules": "Немає правил.", "emptyGoal": "Немає цілей.", "emptyTips": "Немає порад.", "error": "Помилка." },
             "pl": { "rules": "Zasady klanu", "goal": "Cele klanu", "tips": "Porady", "emptyRules": "Brak zasad.", "emptyGoal": "Brak celów.", "emptyTips": "Brak porad.", "error": "Błąd." }
         };
 
         function arrayToHtmlList(arr, emptyMessage) {
-            if (!arr || !Array.isArray(arr) || arr.length === 0) {
-                return '<li>' + emptyMessage + '</li>';
-            }
+            if (!arr || !Array.isArray(arr) || arr.length === 0) return '<li>' + emptyMessage + '</li>';
             var html = '';
             for (var i = 0; i < arr.length; i++) {
-                if (arr[i] && arr[i].trim() !== '') {
-                    html += '<li>' + arr[i] + '</li>';
-                }
+                if (arr[i] && arr[i].trim() !== '') html += '<li>' + arr[i] + '</li>';
             }
             return html === '' ? '<li>' + emptyMessage + '</li>' : html;
         }
 
         window.loadLanguageRules = async function(lang, buttonElement) {
-            console.log("Požadavek na jazyk:", lang);
-
             var buttons = document.getElementsByClassName('lang-button');
-            for (var i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove('active');
-            }
-            if (buttonElement) {
-                buttonElement.classList.add('active');
-            } else {
-                var targetBtn = document.getElementById('lang-' + lang);
-                if (targetBtn) targetBtn.classList.add('active');
-            }
+            for (var i = 0; i < buttons.length; i++) { buttons[i].classList.remove('active'); }
+            
+            if (buttonElement) { buttonElement.classList.add('active'); } 
+            else { var targetBtn = document.getElementById('lang-' + lang); if (targetBtn) targetBtn.classList.add('active'); }
 
             var rulesList = document.getElementById("rulesList");
             var goalList = document.getElementById("goalList");
             var tipsList = document.getElementById("tipsList");
-            
             var labelRules = document.getElementById("labelRules");
             var labelGoal = document.getElementById("labelGoal");
             var labelTips = document.getElementById("labelTips");
 
             var t = window.translations[lang] || window.translations['cz'];
-            
             if (labelRules) labelRules.innerText = t.rules;
             if (labelGoal) labelGoal.innerText = t.goal;
             if (labelTips) labelTips.innerText = t.tips;
@@ -201,19 +176,34 @@
             if (goalList) goalList.innerHTML = '<li>Načítám...</li>';
             if (tipsList) tipsList.innerHTML = '<li>Načítám...</li>';
 
-            // Zobrazení sekce se sloupci
             var contentSection = document.getElementById("content-section");
             if (contentSection) contentSection.style.display = "flex";
 
-            var apiLang = lang === 'cz' ? 'cs' : lang;
+            // TADY JE OPRAVA: Posíláme na server přesný kód, který server v server.js očekává
+            var apiLang = (lang === 'cz') ? 'cs' : lang;
 
             try {
                 var response = await fetch('/rules/' + apiLang);
-                if (!response.ok) throw new Error('Chyba serveru: ' + response.status);
-
+                if (!response.ok) throw new Error('Chyba: ' + response.status);
                 var data = await response.json();
 
                 if (data) {
                     if (rulesList) rulesList.innerHTML = arrayToHtmlList(data.rules, t.emptyRules);
                     if (goalList) goalList.innerHTML = arrayToHtmlList(data.goal, t.emptyGoal);
                     if (tipsList) tipsList.innerHTML = arrayToHtmlList(data.tips, t.emptyTips);
+                }
+            } catch (error) {
+                console.error('Chyba:', error);
+                var errorHtml = '<li style="color: #ff4d4d; font-weight: bold;">' + t.error + '</li>';
+                if (rulesList) rulesList.innerHTML = errorHtml;
+                if (goalList) goalList.innerHTML = errorHtml;
+                if (tipsList) tipsList.innerHTML = errorHtml;
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            window.loadLanguageRules('cz');
+        });
+    </script>
+</body>
+</html>
