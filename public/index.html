@@ -50,12 +50,15 @@
             text-shadow: 3px 3px 8px rgba(0,0,0,0.95); 
         }
         
-        p { 
+        /* Styl pro úvodní vícejazyčné instrukce pod nadpisem */
+        .welcome-lines {
+            margin-top: 15px;
+        }
+        .welcome-lines p { 
             color: #ccc; 
-            font-size: 1.2em; 
+            font-size: 1.1em; 
             text-shadow: 1px 1px 3px rgba(0,0,0,0.9); 
-            margin-top: 10px; 
-            margin-bottom: 0; 
+            margin: 4px 0; 
             font-weight: bold;
         }
         
@@ -87,18 +90,18 @@
         ul, ol { padding-left: 20px; margin: 0; color: #eee; font-size: 1.05em; line-height: 1.6; }
         li { margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
         
-        #content-section { display: none; }
+        #content-section { display: block; }
     </style>
 
-    <!-- SKRIPT JE TEĎ NAČTENÝ HNED NA ZAČÁTKU – Tlačítka funkci stoprocentně uvidí -->
     <script>
+        // Lokální slovník pro nadpisy sloupců podle vybraného jazyka
         window.translations = {
-            "cz": { "sub": "Vyberte jazyk pro zobrazení pravidel.", "rules": "Pravidla klanu", "goal": "Co je cílem klanu", "tips": "Tipy a rady", "emptyRules": "Žádná pravidla nebyla zadána.", "emptyGoal": "Žádné klanové cíle nebyly zadány.", "emptyTips": "Žádné tipy nebyly zadány.", "error": "Nepodařilo se načíst pravidla z databáze." },
-            "en": { "sub": "Select a language to display the rules.", "rules": "Clan Rules", "goal": "Clan Goals", "tips": "Tips and Tricks", "emptyRules": "No rules have been entered.", "emptyGoal": "No clan goals have been entered.", "emptyTips": "No tips have been entered.", "error": "Failed to load rules from database." },
-            "ru": { "sub": "Vyberite jazyk dlia otobrazenia pravil.", "rules": "Pravila klana", "goal": "Celi klana", "tips": "Sovety i podskazki", "emptyRules": "Pravila ne ukazany.", "emptyGoal": "Celi ne ukazany.", "emptyTips": "Sovety ne ukazany.", "error": "Oshibka BD." },
-            "de": { "sub": "Wählen Sie eine Sprache aus.", "rules": "Clan-Regeln", "goal": "Clan-Ziele", "tips": "Tipps", "emptyRules": "Keine Regeln.", "emptyGoal": "Keine Ziele.", "emptyTips": "Keine Tipps.", "error": "Fehler." },
-            "ua": { "sub": "Vyberit movu dlia pravyl.", "rules": "Pravyla klanu", "goal": "Cili klanu", "tips": "Porady", "emptyRules": "Nema pravil.", "emptyGoal": "Nema cilei.", "emptyTips": "Nema porad.", "error": "Pomilka." },
-            "pl": { "sub": "Wybierz jezyk.", "rules": "Zasady klanu", "goal": "Cele klanu", "tips": "Porady", "emptyRules": "Brak zasad.", "emptyGoal": "Brak celow.", "emptyTips": "Brak porad.", "error": "Blad." }
+            "cz": { "rules": "Pravidla klanu", "goal": "Co je cílem klanu", "tips": "Tipy a rady", "emptyRules": "Žádná pravidla nebyla zadána.", "emptyGoal": "Žádné klanové cíle nebyly zadány.", "emptyTips": "Žádné tipy nebyly zadány.", "error": "Nepodařilo se načíst pravidla z databáze." },
+            "en": { "rules": "Clan Rules", "goal": "Clan Goals", "tips": "Tips and Tricks", "emptyRules": "No rules have been entered.", "emptyGoal": "No clan goals have been entered.", "emptyTips": "No tips have been entered.", "error": "Failed to load rules from database." },
+            "ru": { "rules": "Pravila klana", "goal": "Celi klana", "tips": "Sovety i podskazki", "emptyRules": "Pravila ne ukazany.", "emptyGoal": "Celi ne ukazany.", "emptyTips": "Sovety ne ukazany.", "error": "Oshibka BD." },
+            "de": { "rules": "Clan-Regeln", "goal": "Clan-Ziele", "tips": "Tipps", "emptyRules": "Keine Regeln.", "emptyGoal": "Keine Ziele.", "emptyTips": "Keine Tipps.", "error": "Fehler." },
+            "ua": { "rules": "Pravyla klanu", "goal": "Cili klanu", "tips": "Porady", "emptyRules": "Nema pravil.", "emptyGoal": "Nema cilei.", "emptyTips": "Nema porad.", "error": "Pomilka." },
+            "pl": { "rules": "Zasady klanu", "goal": "Cele klanu", "tips": "Porady", "emptyRules": "Brak zasad.", "emptyGoal": "Brak celow.", "emptyTips": "Brak porad.", "error": "Blad." }
         };
 
         function arrayToHtmlList(arr, emptyMessage) {
@@ -114,7 +117,6 @@
             return html === '' ? '<li>' + emptyMessage + '</li>' : html;
         }
 
-        // Definice absolutně globální funkce viditelné ihned pro celé HTML
         window.loadLanguageRules = async function(lang, buttonElement) {
             console.log("Požadavek na jazyk:", lang);
 
@@ -132,16 +134,14 @@
             var rulesList = document.getElementById("rulesList");
             var goalList = document.getElementById("goalList");
             var tipsList = document.getElementById("tipsList");
-            var contentSection = document.getElementById("content-section");
             
-            var subTitle = document.getElementById("subTitle");
             var labelRules = document.getElementById("labelRules");
             var labelGoal = document.getElementById("labelGoal");
             var labelTips = document.getElementById("labelTips");
 
             var t = window.translations[lang] || window.translations['cz'];
             
-            if (subTitle) subTitle.innerText = t.sub;
+            // Přepínáme pouze nadpisy sloupců podle vybraného jazyka
             if (labelRules) labelRules.innerText = t.rules;
             if (labelGoal) labelGoal.innerText = t.goal;
             if (labelTips) labelTips.innerText = t.tips;
@@ -149,8 +149,6 @@
             if (rulesList) rulesList.innerHTML = '<li>Načítám...</li>';
             if (goalList) goalList.innerHTML = '<li>Načítám...</li>';
             if (tipsList) tipsList.innerHTML = '<li>Načítám...</li>';
-            
-            if (contentSection) contentSection.style.display = 'block';
 
             var apiLang = lang === 'cz' ? 'cs' : lang;
 
@@ -175,7 +173,6 @@
             }
         }
 
-        // Automatické spuštění výchozí češtiny po načtení prvků stránky
         document.addEventListener('DOMContentLoaded', function() {
             var czBtn = document.getElementById('lang-cz');
             if (typeof window.loadLanguageRules === 'function') {
@@ -190,7 +187,16 @@
         <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vlevo">
         <div class="header-title-block">
             <h1>For Kill Army</h1>
-            <p id="subTitle">Vyberte jazyk pro zobrazení pravidel.</p>
+            
+            <!-- VŠECHNY ÚVODNÍ TEXTY PEVNĚ VYPSANÉ PRO KAŽDÉHO NÁVŠTĚVNÍKA HNED NA ÚVOD -->
+            <div class="welcome-lines">
+                <p>Vyberte jazyk pro zobrazení pravidel.</p>
+                <p>Select a language to display the rules.</p>
+                <p>Wählen Sie eine Sprache aus, um die Regeln anzuzeigen.</p>
+                <p>Wybierz język, aby wyświetlić zasady klanu.</p>
+                <p>Виберіть мову для відображення правил клану.</p>
+                <p>Выберите язык для отображения правил клана.</p>
+            </div>
         </div>
         <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vpravo">
     </header>
@@ -207,3 +213,4 @@
     <main id="content-section">
         <div class="columns-container">
             
+            <div class="column">
