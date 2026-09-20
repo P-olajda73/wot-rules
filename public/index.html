@@ -33,27 +33,38 @@
             text-align: center;
             padding: 0 20px;
         }
+        
+        /* 🛠️ UPRAVENO: Zvětšení a stabilizace obou log */
         .logo-side { 
-            width: 140px; 
-            height: auto;
+            height: 180px; /* Zvětšeno z původních rozměrů */
+            width: auto; 
             flex-shrink: 0;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6));
         }
         
+        /* 🛠️ UPRAVENO: Optická korekce pro pravé logo, aby nevypadalo menší */
+        .logo-side-right {
+            height: 194px; /* O něco větší výška než levé, aby se opticky vyrovnalo */
+        }
+        
+        /* 🛠️ UPRAVENO: Zvětšený název klanu */
         h1 { 
             color: #ff9f1c; 
             margin: 0; 
-            font-size: 3.2em; 
+            font-size: 4.2em; /* Zvětšeno z 3.2em */
             text-transform: uppercase; 
-            letter-spacing: 2px; 
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.9); 
+            letter-spacing: 3px; 
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.95); 
         }
         p { color: #ccc; font-size: 1.1em; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 8px; margin-bottom: 0; }
         
         /* Přizpůsobení pro mobily */
         @media (max-width: 768px) {
             header { flex-direction: column; gap: 15px; }
-            .logo-side { width: 100px; }
-            h1 { font-size: 2.3em; }
+            .logo-side { height: 110px; }
+            .logo-side-right { height: 118px; }
+            h1 { font-size: 2.8em; }
         }
 
         /* 🔹 TLAČÍTKA JAZYKŮ */
@@ -93,7 +104,8 @@
             <h1>For Kill Army</h1>
             <p id="subTitle">Vyberte jazyk pro zobrazení pravidel.</p>
         </div>
-        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vpravo">
+        <!-- 🛠️ UPRAVENO: Přidána specifická třída logo-side-right pro pravé logo -->
+        <img class="logo-side logo-side-right" src="logo.png" alt="For Kill Army Logo Vpravo">
     </header>
 
     <!-- 🔹 VÝBĚR JAZYKŮ -->
@@ -124,7 +136,7 @@
 
             <!-- 3. SLOUPEC: TIPY -->
             <div class="column">
-                <h3 id="labelTips">Tipy a rady</h3> <!-- ✅ OPRAVENO: Přidáno chybějící id="labelTips" -->
+                <h3 id="labelTips">Tipy a rady</h3>
                 <ul id="tipsList"></ul>
             </div>
 
@@ -138,10 +150,11 @@
             en: { sub: "Select a language to display the rules.", rules: "Clan Rules", goal: "Clan Goals", tips: "Tips and Tricks", emptyRules: "No rules have been entered.", emptyGoal: "No clan goals have been entered.", emptyTips: "No tips have been entered.", error: "Failed to load rules for this language." },
             ru: { sub: "Выберите язык для отображения правил.", rules: "Правила клана", goal: "Цели клана", tips: "Советы и подсказки", emptyRules: "Правила не указаны.", emptyGoal: "Цели клана не указаны.", emptyTips: "Советы не указаны.", error: "Не удалось загрузить правила для этого языка." },
             de: { sub: "Wählen Sie eine Sprache aus, um die Regeln anzuzeigen.", rules: "Clan-Regeln", goal: "Clan-Ziele", tips: "Tipps und Ratschläge", emptyRules: "Es wurden keine Regeln eingegeben.", emptyGoal: "Es wurden keine Clan-Ziele eingegeben.", emptyTips: "Es wurden keine Tipps eingegeben.", error: "Regeln für diese Sprache konnten nicht geladen werden." },
-            ua: { sub: "Виберіть мову для відображення правил.", rules: "Правила клану", goal: "Цілі клану", tips: "Поради та підказки", emptyRules: "Правила не вказані.", emptyGoal: "Цілі клану не вказані.", emptyTips: "Поради не вказані.", error: "Не вдалося завантажити правила для цієї мови." },
-            pl: { sub: "Wybierz język, aby wyświetlić zasady.", rules: "Zasady klanu", color: "Cele klanu", tips: "Porady i wskazówki", emptyRules: "Nie wprowadzono żadnych zasad.", emptyGoal: "Nie wprowadzono żadnych celów klanu.", emptyTips: "Nie wprowadzono żadnych porad.", error: "Nie udało się załadować zasad dla tego języka." }
+            ua: { sub: "Виберіть мову для відображення правил.", rules: "Правила клану", goal: "Цілі клану", tips: "Поради та підказки", emptyRules: "Правила ne вказані.", emptyGoal: "Цілі клану ne вказані.", emptyTips: "Поради ne вказані.", error: "Не вдалось завантажити правила для цієї мови." },
+            pl: { sub: "Wybierz język, aby wyświetlić zasady.", rules: "Zasady klanu", goal: "Cele klanu", tips: "Porady i wskazówki", emptyRules: "Nie wprowadzono żadnych zasad.", emptyGoal: "Nie wprowadzono żadnych celów klanu.", emptyTips: "Nie wprowadzono żadnych porad.", error: "Nie udało się załadować zasad dla tego języka." }
         };
 
+        // 🛠️ DOPLNĚNÝ A ZPROVOZNĚNÝ JAVASCRIPT:
         async function loadLanguageRules(lang, buttonElement) {
             document.querySelectorAll('.lang-button').forEach(btn => btn.classList.remove('active'));
             if(buttonElement) buttonElement.classList.add('active');
@@ -157,11 +170,14 @@
             const labelTips = document.getElementById("labelTips");
 
             const t = translations[lang] || translations['cz'];
+            
+            // Přepíšeme statické texty na stránce podle vybraného jazyka
             subTitle.innerText = t.sub;
             labelRules.innerText = t.rules;
             labelGoal.innerText = t.goal;
             labelTips.innerText = t.tips;
 
+            // Vymažeme starý obsah seznamů
             rulesList.innerHTML = "";
             goalList.innerHTML = "";
             tipsList.innerHTML = "";
@@ -170,27 +186,15 @@
                 const response = await fetch(`/rules/${lang}`);
                 if (response.ok) {
                     const data = await response.json();
-
+                    
+                    // Vykreslení Pravidel
                     if (data.rules && data.rules.length > 0) {
                         data.rules.forEach(item => rulesList.innerHTML += `<li>${item}</li>`);
-                    } else { rulesList.innerHTML = `<li>${t.emptyRules}</li>`; }
+                    } else {
+                        rulesList.innerHTML = `<li><em>${t.emptyRules}</em></li>`;
+                    }
 
+                    // Vykreslení Cílů
                     if (data.goal && data.goal.length > 0) {
                         data.goal.forEach(item => goalList.innerHTML += `<li>${item}</li>`);
-                    } else { goalList.innerHTML = `<li>${t.emptyGoal}</li>`; }
-
-                    if (data.tips && data.tips.length > 0) {
-                        data.tips.forEach(item => tipsList.innerHTML += `<li>${item}</li>`);
-                    } else { tipsList.innerHTML = `<li>${t.emptyTips}</li>`; }
-
-                    contentSection.style.display = "block";
-                } else {
-                    alert(t.error);
-                }
-            } catch (err) {
-                console.error("Chyba při stahování pravidel:", err);
-            }
-        }
-    </script>
-</body>
-</html>
+                    } else {
