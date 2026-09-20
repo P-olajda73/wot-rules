@@ -192,7 +192,7 @@
                     if (goalList) goalList.innerHTML = arrayToHtmlList(data.goal, t.emptyGoal);
                     if (tipsList) tipsList.innerHTML = arrayToHtmlList(data.tips, t.emptyTips);
                 }
-            } catch (error) {
+                        } catch (error) {
                 console.error('Chyba:', error);
                 var errorHtml = '<li style="color: #ff4d4d; font-weight: bold;">' + t.error + '</li>';
                 if (rulesList) rulesList.innerHTML = errorHtml;
@@ -200,9 +200,9 @@
                 if (tipsList) tipsList.innerHTML = errorHtml;
             }
         };
-
-        
-        });
     </script>
+</body>
+</html>
+
 </body>
 </html>
