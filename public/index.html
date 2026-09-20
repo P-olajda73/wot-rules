@@ -69,11 +69,10 @@
 
         .lang-container { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
         
-        /* UPRAVENO: Přidán flexbox a zarovnání pro vlajky v tlačítkách */
         .lang-button { 
             display: inline-flex;
             align-items: center;
-            gap: 8px; /* Mezera mezi vlajkou a textem */
+            gap: 8px; 
             padding: 10px 20px; 
             font-size: 15px; 
             font-weight: bold; 
@@ -88,7 +87,6 @@
         .lang-button:hover { background: #218074; }
         .lang-button.active { background: #ff9f1c; color: #1e1e24; }
         
-        /* Zvětšení velikosti emoji vlajky uvnitř tlačítka */
         .lang-flag {
             font-size: 1.3em;
             line-height: 1;
@@ -190,36 +188,52 @@
                 if (goalList) goalList.innerHTML = errorHtml;
                 if (tipsList) tipsList.innerHTML = errorHtml;
             }
-        }
+        };
 
+        // Načtení výchozího jazyka po načtení stránky
         document.addEventListener('DOMContentLoaded', function() {
-            var czBtn = document.getElementById('lang-cz');
-            if (typeof window.loadLanguageRules === 'function') {
-                window.loadLanguageRules('cz', czBtn);
-            }
+            window.loadLanguageRules('cz');
         });
     </script>
 </head>
 <body>
 
     <header>
-        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vlevo">
         <div class="header-title-block">
             <h1>For Kill Army</h1>
             <div class="welcome-lines">
-                <p>Vyberte jazyk pro zobrazení pravidel.</p>
-                <p>Select a language to display the rules.</p>
-                <p>Wählen Sie eine Sprache aus, um die Regeln anzuzeigen.</p>
-                <p>Wybierz język, aby wyświetlić zasady klanu.</p>
-                <p>Виберіть мову для відображення правил клану.</p>
-                <p>Выберите язык для отображения правил клана.</p>
+                <p>Vítejte na našem klanovém webu</p>
             </div>
         </div>
-        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vpravo">
     </header>
 
+    <!-- VYGENEROVÁNA VŠECHNA TLAČÍTKA S VLAJKAMI -->
     <div class="lang-container">
-        <!-- UPRAVENO: Do tlačítek přidány barevné ikony vlajek přes emoji -->
-        <button id="lang-cz" class="lang-button" onclick="loadLanguageRules('cz', this)"><span class="lang-flag">🇨🇿</span> Čeština</button>
-        <button id="lang-en" class="lang-button" onclick="loadLanguageRules('en', this)"><span class="lang-flag">🇬🇧</span> English</button>
-        <button id="lang-ru" class="lang-button" onclick="loadLanguageRules('ru', this)"><span class="lang-flag">🇷🇺</span> Русский</button>
+        <button id="lang-cz" class="lang-button" onclick="window.loadLanguageRules('cz', this)">
+            <span class="lang-flag">🇨🇿</span> CZ
+        </button>
+        <button id="lang-en" class="lang-button" onclick="window.loadLanguageRules('en', this)">
+            <span class="lang-flag">🇬🇧</span> EN
+        </button>
+        <button id="lang-de" class="lang-button" onclick="window.loadLanguageRules('de', this)">
+            <span class="lang-flag">🇩🇪</span> DE
+        </button>
+        <button id="lang-pl" class="lang-button" onclick="window.loadLanguageRules('pl', this)">
+            <span class="lang-flag">🇵🇱</span> PL
+        </button>
+        <button id="lang-ua" class="lang-button" onclick="window.loadLanguageRules('ua', this)">
+            <span class="lang-flag">🇺🇦</span> UA
+        </button>
+        <button id="lang-ru" class="lang-button" onclick="window.loadLanguageRules('ru', this)">
+            <span class="lang-flag">🇷🇺</span> RU
+        </button>
+    </div>
+
+    <!-- TŘI SLOUPCE, KAM SE VKLÁDÁ OBSAH -->
+    <div id="content-section" class="columns-container">
+        <div class="column">
+            <h3 id="labelRules">Pravidla klanu</h3>
+            <ul id="rulesList">
+                <li>Načítám...</li>
+            </ul>
+        </div>
