@@ -18,7 +18,7 @@
             text-align: center; 
         }
         
-                /* 🔹 HORNÍ ZÁHLAVÍ: ZVĚTŠENÁ LOGA PO STRANÁCH A VELKÝ NÁPIS UPROSTŘED */
+        /* 🔹 HORNÍ ZÁHLAVÍ: ZVĚTŠENÁ LOGA PO STRANÁCH A VELKÝ NÁPIS UPROSTŘED */
         header { 
             max-width: 1200px;
             margin: 0 auto 30px auto; 
@@ -64,7 +64,6 @@
             h1 { font-size: 2.6em; }
         }
 
-
         /* 🔹 TLAČÍTKA JAZYKŮ */
         .lang-container { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
         .lang-button { padding: 10px 20px; font-size: 15px; font-weight: bold; background: #2a9d8f; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
@@ -89,22 +88,26 @@
         ul, ol { padding-left: 20px; margin: 0; color: #eee; font-size: 1.05em; line-height: 1.6; }
         li { margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.9); }
         
-        /* Skrytí obsahu před zvolením jazyka */
+        /* Skrytí obsahu przed zvolením jazyka */
         #content-section { display: none; }
     </style>
     <link rel="icon" type="image/png" href="favicon.png">
-
 </head>
 <body>
 
-    <!-- 🔹 HORNÍ SEKCE S LOGY PO STRANÁCH -->
     <header>
-        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vlevo">
+        <!-- Logo na levé straně -->
+        <img src="logo.png" alt="For Kill Army Logo" class="logo-side">
+        
         <div class="header-title-block">
             <h1>For Kill Army</h1>
-            <p id="subTitle">Vyberte jazyk pro zobrazení pravidel.</p>
+            <div class="welcome-lines">
+                <p>Vítejte na našem klanovém webu</p>
+            </div>
         </div>
-        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vpravo">
+        
+        <!-- Logo na pravé straně -->
+        <img src="logo.png" alt="For Kill Army Logo" class="logo-side">
     </header>
 
     <!-- 🔹 VÝBĚR JAZYKŮ -->
