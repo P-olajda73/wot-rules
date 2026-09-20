@@ -180,7 +180,7 @@
             if (contentSection) contentSection.style.display = "flex";
 
             // TADY JE OPRAVA: Posíláme na server přesný kód, který server v server.js očekává
-            var apiLang = (lang === 'cz') ? 'cs' : lang;
+            var apiLang = lang;
 
             try {
                 var response = await fetch('/rules/' + apiLang);
