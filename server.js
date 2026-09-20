@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
+import https from "https";
 
 dotenv.config();
 const app = express();
@@ -14,6 +16,42 @@ app.use(express.json());
 // 🔹 Získanie cesty k súboru (kvôli ES Modules)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const publicPath = path.join(__dirname, "public");
+
+// 🔹 AUTOMATICKÉ STAHOVÁNÍ VLAJEK DO SLOŽKY PUBLIC
+const flagsToDownload = [
+    { name: "cz.png", url: "https://flagcdn.com" },
+    { name: "gb.png", url: "https://flagcdn.com" },
+    { name: "ru.png", url: "https://flagcdn.com" },
+    { name: "de.png", url: "https://flagcdn.com" },
+    { name: "ua.png", url: "https://flagcdn.com" },
+    { name: "pl.png", url: "https://flagcdn.com" }
+];
+
+// Ujistíme se, že složka public vůbec existuje
+if (!fs.existsSync(publicPath)) {
+    fs.mkdirSync(publicPath, { recursive: true });
+}
+
+// Funkce, která sama stáhne vlajky ze sítě na disk serveru
+flagsToDownload.forEach(flag => {
+    const filePath = path.join(publicPath, flag.name);
+    if (!fs.existsSync(filePath)) {
+        console.log(`⏳ Stahuji vlajku: ${flag.name}...`);
+        const file = fs.createWriteStream(filePath);
+        https.get(flag.url, (response) => {
+            response.pipe(file);
+            file.on('finish', () => {
+                file.close();
+                console.log(`✅ Vlajka ${flag.name} stažena a uložena.`);
+            });
+        }).on('error', (err) => {
+            fs.unlink(filePath, () => {});
+            console.error(`❌ Nepodařilo se stáhnout vlajku ${flag.name}:`, err.message);
+        });
+    }
+});
 
 // 🔹 Pripojenie k MongoDB
 const mongoURI = process.env.MONGO_URI;
@@ -31,19 +69,18 @@ const rulesSchema = new mongoose.Schema({
 const Rules = mongoose.model("Rules", rulesSchema);
 
 // 🔹 Statické súbory (HTML, CSS, JS)
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(publicPath));
 
 // 🔹 Routes pre HTML stránky
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
-app.get("/login.html", (req, res) => res.sendFile(path.join(__dirname, "public", "login.html")));
+app.get("/", (req, res) => res.sendFile(path.join(publicPath, "index.html")));
+app.get("/login.html", (req, res) => res.sendFile(path.join(publicPath, "login.html")));
 app.get("/admin.html", (req, res) => res.sendFile(path.join(__dirname, "admin.html")));
 
-// 🔹 API Endpoints pre pravidlá (OPRAVENO: Už nepadá na 404, ale bezpečně vrací prázdná pole)
+// 🔹 API Endpoints pre pravidlá
 app.get("/rules/:language", async (req, res) => {
     try {
         const rules = await Rules.findOne({ language: req.params.language });
         
-        // Pokud jazyk v DB neexistuje, neposíláme chybu 404, ale prázdnou strukturu, aby frontend nezamrzl
         if (!rules) {
             return res.json({
                 language: req.params.language,
@@ -79,7 +116,6 @@ app.delete("/rules/:language/:type/:index", async (req, res) => {
       const { language, type, index } = req.params;
       const idx = parseInt(index, 10);
 
-      // ✅ Načítanie pravidiel pre daný jazyk
       const rulesDoc = await Rules.findOne({ language });
       if (!rulesDoc || !Array.isArray(rulesDoc[type])) {
           return res.status(400).json({ error: "Nesprávny jazyk alebo typ." });
@@ -89,7 +125,6 @@ app.delete("/rules/:language/:type/:index", async (req, res) => {
           return res.status(400).json({ error: "Nesprávny index." });
       }
 
-      // ✅ Odstránenie položky zo zoznamu
       rulesDoc[type].splice(idx, 1);
       await rulesDoc.save();
 
