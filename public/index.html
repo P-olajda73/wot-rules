@@ -136,8 +136,7 @@
         </div>
     </main>
 
-        <script>
-        // Stabilní slovník překladů bez jakýchkoliv rizikových znaků
+            <script>
         var translations = {
             "cz": { "sub": "Vyberte jazyk pro zobrazení pravidel.", "rules": "Pravidla klanu", "goal": "Co je cílem klanu", "tips": "Tipy a rady", "emptyRules": "Žádná pravidla nebyla zadána.", "emptyGoal": "Žádné klanové cíle nebyly zadány.", "emptyTips": "Žádné tipy nebyly zadány.", "error": "Nepodařilo se načíst pravidla z databáze." },
             "en": { "sub": "Select a language to display the rules.", "rules": "Clan Rules", "goal": "Clan Goals", "tips": "Tips and Tricks", "emptyRules": "No rules have been entered.", "emptyGoal": "No clan goals have been entered.", "emptyTips": "No tips have been entered.", "error": "Failed to load rules from database." },
@@ -147,24 +146,21 @@
             "pl": { "sub": "Wybierz jezyk.", "rules": "Zasady klanu", "goal": "Cele klanu", "tips": "Porady", "emptyRules": "Brak zasad.", "emptyGoal": "Brak celow.", "emptyTips": "Brak porad.", "error": "Blad." }
         };
 
-        // Pomocná funkce pro převod textu (rozděleného enterem) na HTML body <li>
-        function textToHtmlList(text, emptyMessage) {
-            if (!text || text.trim() === '') {
+        // Funkce pro správný převod POLE z MongoDB na seznam <li> bodů
+        function arrayToHtmlList(arr, emptyMessage) {
+            if (!arr || !Array.isArray(arr) || arr.length === 0) {
                 return '<li>' + emptyMessage + '</li>';
             }
-            var lines = text.split(/\r?\n/);
             var html = '';
-            for (var i = 0; i < lines.length; i++) {
-                if (lines[i].trim() !== '') {
-                    html += '<li>' + lines[i] + '</li>';
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i] && arr[i].trim() !== '') {
+                    html += '<li>' + arr[i] + '</li>';
                 }
             }
-            return html;
+            return html === '' ? '<li>' + emptyMessage + '</li>' : html;
         }
 
-        // FUNKCE JE TEĎ GLOBÁLNÍ - tlačítka na ni už bez problému uvidí
         async function loadLanguageRules(lang, buttonElement) {
-            // 1. Vizuální přepnutí tlačítek
             var buttons = document.getElementsByClassName('lang-button');
             for (var i = 0; i < buttons.length; i++) {
                 buttons[i].classList.remove('active');
@@ -176,7 +172,6 @@
                 if (targetBtn) targetBtn.classList.add('active');
             }
 
-            // 2. Příprava prvků z DOM
             var rulesList = document.getElementById("rulesList");
             var goalList = document.getElementById("goalList");
             var tipsList = document.getElementById("tipsList");
@@ -189,42 +184,33 @@
 
             var t = translations[lang] || translations['cz'];
             
-            // 3. Dosazení lokálních statických překladů pro nadpisy
             if (subTitle) subTitle.innerText = t.sub;
             if (labelRules) labelRules.innerText = t.rules;
             if (labelGoal) labelGoal.innerText = t.goal;
             if (labelTips) labelTips.innerText = t.tips;
 
-            // Indikace načítání, než dorazí odpověď z databáze
             if (rulesList) rulesList.innerHTML = '<li>Načítám...</li>';
             if (goalList) goalList.innerHTML = '<li>Načítám...</li>';
             if (tipsList) tipsList.innerHTML = '<li>Načítám...</li>';
             
-            // Zobrazíme sekci se sloupci (změna z display: none na block)
             if (contentSection) contentSection.style.display = 'block';
 
-            // 4. Převod zkratky 'cz' na 'cs' kvůli backend API endpointu /rules/cs
             var apiLang = lang === 'cz' ? 'cs' : lang;
 
             try {
-                // Fetch volání na backend běžící na Renderu
                 var response = await fetch('/rules/' + apiLang);
-                
-                if (!response.ok) {
-                    throw new Error('Chyba serveru: ' + response.status);
-                }
+                if (!response.ok) throw new Error('Chyba serveru: ' + response.status);
 
                 var data = await response.json();
 
-                // 5. Vykreslení dat z MongoDB do sloupců
                 if (data) {
-                    if (rulesList) rulesList.innerHTML = textToHtmlList(data.rules, t.emptyRules);
-                    if (goalList) goalList.innerHTML = textToHtmlList(data.goal, t.emptyGoal);
-                    if (tipsList) tipsList.innerHTML = textToHtmlList(data.tips, t.emptyTips);
+                    if (rulesList) rulesList.innerHTML = arrayToHtmlList(data.rules, t.emptyRules);
+                    if (goalList) goalList.innerHTML = arrayToHtmlList(data.goal, t.emptyGoal);
+                    if (tipsList) tipsList.innerHTML = arrayToHtmlList(data.tips, t.emptyTips);
                 }
 
             } catch (error) {
-                console.error('Chyba při stahování klanových dat:', error);
+                console.error('Chyba:', error);
                 var errorHtml = '<li style="color: #ff4d4d; font-weight: bold;">' + t.error + '</li>';
                 if (rulesList) rulesList.innerHTML = errorHtml;
                 if (goalList) goalList.innerHTML = errorHtml;
@@ -232,7 +218,6 @@
             }
         }
 
-        // Automatické načtení češtiny ihned po otevření webu
         document.addEventListener('DOMContentLoaded', function() {
             var czBtn = document.getElementById('lang-cz');
             loadLanguageRules('cz', czBtn);
