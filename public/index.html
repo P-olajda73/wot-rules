@@ -33,16 +33,13 @@
             padding: 0 20px;
         }
         
+        /* Obě loga teď používají výhradně tuto třídu, takže budou stoprocentně identická */
         .logo-side { 
             height: 180px; 
             width: auto; 
             flex-shrink: 0;
             object-fit: contain;
             filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6));
-        }
-        
-        .logo-side-right {
-            height: 194px; 
         }
         
         h1 { 
@@ -66,7 +63,6 @@
         @media (max-width: 768px) {
             header { flex-direction: column; gap: 15px; }
             .logo-side { height: 110px; }
-            .logo-side-right { height: 118px; }
             h1 { font-size: 2.8em; }
         }
 
@@ -98,12 +94,14 @@
 <body>
 
     <header>
+        <!-- Levé logo -->
         <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vlevo">
         <div class="header-title-block">
             <h1>For Kill Army</h1>
             <p id="subTitle">Vyberte jazyk pro zobrazení pravidel.</p>
         </div>
-        <img class="logo-side logo-side-right" src="logo.png" alt="For Kill Army Logo Vpravo">
+        <!-- Pravé logo – nyní je přesnou kopií levého loga se stejnou výškou 180px -->
+        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vpravo">
     </header>
 
     <div class="lang-container">
@@ -136,7 +134,7 @@
         </div>
     </main>
 
-            <script>
+    <script>
         var translations = {
             "cz": { "sub": "Vyberte jazyk pro zobrazení pravidel.", "rules": "Pravidla klanu", "goal": "Co je cílem klanu", "tips": "Tipy a rady", "emptyRules": "Žádná pravidla nebyla zadána.", "emptyGoal": "Žádné klanové cíle nebyly zadány.", "emptyTips": "Žádné tipy nebyly zadány.", "error": "Nepodařilo se načíst pravidla z databáze." },
             "en": { "sub": "Select a language to display the rules.", "rules": "Clan Rules", "goal": "Clan Goals", "tips": "Tips and Tricks", "emptyRules": "No rules have been entered.", "emptyGoal": "No clan goals have been entered.", "emptyTips": "No tips have been entered.", "error": "Failed to load rules from database." },
@@ -146,7 +144,6 @@
             "pl": { "sub": "Wybierz jezyk.", "rules": "Zasady klanu", "goal": "Cele klanu", "tips": "Porady", "emptyRules": "Brak zasad.", "emptyGoal": "Brak celow.", "emptyTips": "Brak porad.", "error": "Blad." }
         };
 
-        // Funkce pro správný převod POLE z MongoDB na seznam <li> bodů
         function arrayToHtmlList(arr, emptyMessage) {
             if (!arr || !Array.isArray(arr) || arr.length === 0) {
                 return '<li>' + emptyMessage + '</li>';
@@ -214,14 +211,3 @@
                 var errorHtml = '<li style="color: #ff4d4d; font-weight: bold;">' + t.error + '</li>';
                 if (rulesList) rulesList.innerHTML = errorHtml;
                 if (goalList) goalList.innerHTML = errorHtml;
-                if (tipsList) tipsList.innerHTML = errorHtml;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            var czBtn = document.getElementById('lang-cz');
-            loadLanguageRules('cz', czBtn);
-        });
-    </script>
-</body>
-</html>
