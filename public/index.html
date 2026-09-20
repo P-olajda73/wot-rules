@@ -89,48 +89,8 @@
         
         #content-section { display: none; }
     </style>
-</head>
-<body>
 
-    <header>
-        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vlevo">
-        <div class="header-title-block">
-            <h1>For Kill Army</h1>
-            <p id="subTitle">Vyberte jazyk pro zobrazení pravidel.</p>
-        </div>
-        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vpravo">
-    </header>
-
-    <div class="lang-container">
-        <button id="lang-cz" class="lang-button" onclick="loadLanguageRules('cz', this)">Čeština</button>
-        <button id="lang-en" class="lang-button" onclick="loadLanguageRules('en', this)">English</button>
-        <button id="lang-ru" class="lang-button" onclick="loadLanguageRules('ru', this)">Русский</button>
-        <button id="lang-de" class="lang-button" onclick="loadLanguageRules('de', this)">Deutsch</button>
-        <button id="lang-ua" class="lang-button" onclick="loadLanguageRules('ua', this)">Ukrajinština</button>
-        <button id="lang-pl" class="lang-button" onclick="loadLanguageRules('pl', this)">Polski</button>
-    </div>
-
-    <main id="content-section">
-        <div class="columns-container">
-            
-            <div class="column">
-                <h3 id="labelRules">Pravidla klanu</h3>
-                <ol id="rulesList"></ol>
-            </div>
-
-            <div class="column">
-                <h3 id="labelGoal">Co je cílem klanu</h3>
-                <ul id="goalList"></ul>
-            </div>
-
-            <div class="column">
-                <h3 id="labelTips">Tipy a rady</h3>
-                <ul id="tipsList"></ul>
-            </div>
-
-        </div>
-    </main>
-
+    <!-- SKRIPT JE TEĎ NAČTENÝ HNED NA ZAČÁTKU – Tlačítka funkci stoprocentně uvidí -->
     <script>
         window.translations = {
             "cz": { "sub": "Vyberte jazyk pro zobrazení pravidel.", "rules": "Pravidla klanu", "goal": "Co je cílem klanu", "tips": "Tipy a rady", "emptyRules": "Žádná pravidla nebyla zadána.", "emptyGoal": "Žádné klanové cíle nebyly zadány.", "emptyTips": "Žádné tipy nebyly zadány.", "error": "Nepodařilo se načíst pravidla z databáze." },
@@ -154,9 +114,9 @@
             return html === '' ? '<li>' + emptyMessage + '</li>' : html;
         }
 
-        // Definujeme funkci přímo na objekt window, aby byla 100% dostupná globálně pro HTML tlačítka
+        // Definice absolutně globální funkce viditelné ihned pro celé HTML
         window.loadLanguageRules = async function(lang, buttonElement) {
-            console.log("Funkce spuštěna pro jazyk:", lang);
+            console.log("Požadavek na jazyk:", lang);
 
             var buttons = document.getElementsByClassName('lang-button');
             for (var i = 0; i < buttons.length; i++) {
@@ -207,7 +167,43 @@
                 }
 
             } catch (error) {
-                console.error('Chyba při komunikaci s API:', error);
+                console.error('Chyba při stahování:', error);
                 var errorHtml = '<li style="color: #ff4d4d; font-weight: bold;">' + t.error + '</li>';
                 if (rulesList) rulesList.innerHTML = errorHtml;
                 if (goalList) goalList.innerHTML = errorHtml;
+                if (tipsList) tipsList.innerHTML = errorHtml;
+            }
+        }
+
+        // Automatické spuštění výchozí češtiny po načtení prvků stránky
+        document.addEventListener('DOMContentLoaded', function() {
+            var czBtn = document.getElementById('lang-cz');
+            if (typeof window.loadLanguageRules === 'function') {
+                window.loadLanguageRules('cz', czBtn);
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <header>
+        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vlevo">
+        <div class="header-title-block">
+            <h1>For Kill Army</h1>
+            <p id="subTitle">Vyberte jazyk pro zobrazení pravidel.</p>
+        </div>
+        <img class="logo-side" src="logo.png" alt="For Kill Army Logo Vpravo">
+    </header>
+
+    <div class="lang-container">
+        <button id="lang-cz" class="lang-button" onclick="loadLanguageRules('cz', this)">Čeština</button>
+        <button id="lang-en" class="lang-button" onclick="loadLanguageRules('en', this)">English</button>
+        <button id="lang-ru" class="lang-button" onclick="loadLanguageRules('ru', this)">Русский</button>
+        <button id="lang-de" class="lang-button" onclick="loadLanguageRules('de', this)">Deutsch</button>
+        <button id="lang-ua" class="lang-button" onclick="loadLanguageRules('ua', this)">Ukrajinština</button>
+        <button id="lang-pl" class="lang-button" onclick="loadLanguageRules('pl', this)">Polski</button>
+    </div>
+
+    <main id="content-section">
+        <div class="columns-container">
+            
