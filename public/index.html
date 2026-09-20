@@ -18,12 +18,12 @@
             text-align: center; 
         }
         
-        /* 🔹 HORNÍ ZÁHLAVÍ: ZVĚTŠENÁ LOGA PO STRANÁCH A VELKÝ NÁPIS UPROSTŘED */
+                /* 🔹 HORNÍ ZÁHLAVÍ: ZVĚTŠENÁ LOGA PO STRANÁCH A VELKÝ NÁPIS UPROSTŘED */
         header { 
             max-width: 1200px;
             margin: 0 auto 30px auto; 
             border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
-            padding-bottom: 20px;
+            padding-bottom: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -34,27 +34,36 @@
             padding: 0 20px;
         }
         .logo-side { 
-            width: 140px; 
+            width: 180px; /* ZVĚTŠENO ze 140px */
             height: auto;
             flex-shrink: 0;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6)); /* Přidán pěkný stín pod loga */
         }
         
         h1 { 
             color: #ff9f1c; 
             margin: 0; 
-            font-size: 3.2em; 
+            font-size: 4.2em; /* ZVĚTŠENO z 3.2em */
             text-transform: uppercase; 
-            letter-spacing: 2px; 
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.9); 
+            letter-spacing: 3px; 
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.95); 
         }
-        p { color: #ccc; font-size: 1.1em; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin-top: 8px; margin-bottom: 0; }
+        .welcome-lines p { 
+            color: #ccc; 
+            font-size: 1.15em; 
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9); 
+            margin-top: 12px; 
+            margin-bottom: 0; 
+            font-weight: bold;
+        }
         
-        /* Přizpůsobení pro mobily */
+        /* Přizpůsobení pro mobily, aby obří nápis neodcestoval z displeje */
         @media (max-width: 768px) {
             header { flex-direction: column; gap: 15px; }
-            .logo-side { width: 100px; }
-            h1 { font-size: 2.3em; }
+            .logo-side { width: 120px; }
+            h1 { font-size: 2.6em; }
         }
+
 
         /* 🔹 TLAČÍTKA JAZYKŮ */
         .lang-container { margin-bottom: 30px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
